@@ -19,9 +19,17 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'name',
+        'first_name',
+        'last_name',
+        'phone',
         'email',
         'password',
+        'profile_photo',
+        'latitude',
+        'longitude',
+        'last_login_at',
+        'otp_code',
+        'otp_expires_at',
     ];
 
     /**
@@ -45,5 +53,27 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function doctor()
+    {
+        return $this->hasOne(Doctor::class);
+    }
+
+    public function patient()
+    {
+        return $this->hasOne(Patient::class);
+    }
+    public function admin()
+    {
+        return $this->hasOne(Admin::class);
+    }
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class);
+    }
+    public function messages()
+    {
+        return $this->hasMany(Message::class);
     }
 }
