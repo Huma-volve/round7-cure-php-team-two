@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Doctor extends Model
 {
+    use SoftDeletes;
+
     protected $fillable = [
         'user_id',
         'specialty_id',
@@ -38,4 +41,15 @@ class Doctor extends Model
     {
         return $this->hasMany(Chat::class);
     }
+
+    public function sessionFeedbacks()
+    {
+        return $this->hasMany(SessionFeedback::class);
+    }
+
+    public function favorites()
+{
+    return $this->morphMany(Favorite::class, 'favoritable');
+}
+
 }

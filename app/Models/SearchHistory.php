@@ -4,13 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-class Admin extends Model
+
+class SearchHistory extends Model
 {
     use SoftDeletes;
 
     protected $fillable = [
         'user_id',
-        'status',
+        'search_query',
+        'location',
     ];
 
     public function user()

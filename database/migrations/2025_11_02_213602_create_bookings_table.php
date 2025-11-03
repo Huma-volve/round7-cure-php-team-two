@@ -21,6 +21,7 @@ return new class extends Migration
             $table->enum('payment_method', ['PayPal','Stripe', 'Cash'])->default('Cash');
             $table->enum('payment_status', ['Pending','Processing','Paid','Failed','Cancelled','Refunded'])->default('Pending');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

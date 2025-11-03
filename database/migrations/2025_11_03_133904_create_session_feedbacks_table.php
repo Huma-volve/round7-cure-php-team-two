@@ -11,23 +11,24 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('doctors', function (Blueprint $table) {
+        Schema::create('session_feedbacks', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users');
-            $table->foreignId('specialty_id')->constrained('specialties');
-            $table->string('license_number');
-            $table->float('session_price');
-            $table->json('available_slots')->nullable();
+            $table->foreignId('booking_id')->constrained('bookings');
+            $table->foreignId('doctor_id')->constrained('doctors');
+            $table->foreignId('patient_id')->constrained('patients');
+            $table->tinyInteger('overall_experience');
+            $table->text('notes');
             $table->timestamps();
             $table->softDeletes();
         });
     }
+
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('doctors');
+        Schema::dropIfExists('session_feedbacks');
     }
 };

@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Notification extends Model
 {
+    use SoftDeletes;
+
     protected $fillable = [
         'to_user_id',
         'message',
@@ -19,11 +22,9 @@ class Notification extends Model
         return $this->belongsTo(User::class, 'to_user_id');
     }
 
-    //polymorphic relationship
-    public function type()
+    //polymorphic relationship(booking or message or payment)
+    public function notifiable()
     {
-        return $this->morphTo(__FUNCTION__, 'type_model', 'type_id');
+        return $this->morphTo();
     }
-
 }
-

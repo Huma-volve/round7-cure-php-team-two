@@ -5,24 +5,30 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Review extends Model
+class SessionFeedback extends Model
 {
-
     use SoftDeletes;
+
     protected $fillable = [
-        'patient_id',
+        'booking_id',
         'doctor_id',
-        'rating',
-        'comment',
+        'patient_id',
+        'overall_experience',
+        'notes',
     ];
 
-    public function patient()
+    public function booking()
     {
-        return $this->belongsTo(Patient::class);
+        return $this->belongsTo(Booking::class);
     }
 
     public function doctor()
     {
         return $this->belongsTo(Doctor::class);
+    }
+
+    public function patient()
+    {
+        return $this->belongsTo(Patient::class);
     }
 }

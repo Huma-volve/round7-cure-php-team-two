@@ -17,6 +17,7 @@ return new class extends Migration
             $table->date('birth_date')->nullable();
             $table->text('medical_history')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

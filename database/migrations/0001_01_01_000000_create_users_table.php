@@ -16,9 +16,9 @@ return new class extends Migration
             $table->string('first_name');
             $table->string('last_name');
             $table->string('email')->unique();
+            $table->string('google_id')->nullable()->unique();
             $table->string('phone')->unique();
             $table->string('password');
-            //$table->foreignId('role_id')->constrained('roles');
             $table->string('profile_photo')->nullable();
             $table->float('latitude')->nullable();
             $table->float('longitude')->nullable();
@@ -26,6 +26,7 @@ return new class extends Migration
             $table->integer('otp_code')->nullable();
             $table->datetime('otp_expires_at')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
