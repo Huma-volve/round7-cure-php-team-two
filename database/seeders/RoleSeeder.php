@@ -15,7 +15,12 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
+        $roles = ['admin', 'doctor', 'patient'];
 
+        foreach ($roles as $role) {
+            Role::firstOrCreate(['name' => $role]);
+
+        }
         $admin = Role::where('name', 'admin')->first();
 
         $admin->givePermissionTo([
