@@ -2,7 +2,13 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\ChatController;
+use App\Http\Controllers\Api\MessageController;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+
+Route::middleware('auth:sanctum')->group(function (){
+
+    Route::apiResource('chat', ChatController::class)->only(['index','store','show']);
+    Route::apiResource('chat_message', MessageController::class)->only(['index','store']);
+
+});

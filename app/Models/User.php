@@ -19,8 +19,7 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'first_name',
-        'last_name',
+        'name',
         'phone',
         'email',
         'password',
@@ -74,7 +73,7 @@ class User extends Authenticatable
     }
     public function messages()
     {
-        return $this->hasMany(Message::class);
+        return $this->hasMany(Message::class, 'sender_id');
     }
 
     public function favorites()
@@ -86,4 +85,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(SearchHistory::class);
     }
+    public function chats()
+    {
+        return $this->hasMany(Chat::class);
+    }
+
 }
