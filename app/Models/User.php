@@ -11,7 +11,7 @@ use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\SoftDeletes;
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, HasApiTokens,SoftDeletes, HasRoles;
+    use HasFactory, Notifiable, HasApiTokens, SoftDeletes, HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -40,6 +40,7 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+    protected $appends = ['full_name'];
 
     /**
      * Get the attributes that should be cast.
@@ -53,7 +54,10 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-
+    public function getFullNameAttribute(): string
+    {
+        return $this->first_name . ' ' . $this->last_name;
+    }
     public function doctor()
     {
         return $this->hasOne(Doctor::class);
