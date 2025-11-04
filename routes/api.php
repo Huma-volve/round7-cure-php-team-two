@@ -17,11 +17,11 @@ Route::prefix('auth')->controller(PasswordController::class)->group(function () 
     Route::post('forgot-password',  'sendResetCode');
 
 // Endpoint لإدخال الكود والباسورد الجديد
-    Route::post('reset-password',  'sendResetCode');
+    Route::post('reset-password',  'resetPassword');
 });
 
 
 Route::post('google/login', [GoogleController::class, 'LogInWithGoogle']);
 
 Route::apiResource('users', UserController::class);
-Route::post('/test', [\App\Http\Controllers\otpController::class, 'verifyOtp']);
+

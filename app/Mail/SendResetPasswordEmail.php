@@ -9,16 +9,17 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class SendResetPasswordEmail extends Mailable
+class SendResetPasswordEmail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
     /**
      * Create a new message instance.
      */
-    public function __construct()
+    public $otp;
+    public function __construct($otp)
     {
-        //
+        $this->otp=$otp;
     }
 
     /**
@@ -37,9 +38,13 @@ class SendResetPasswordEmail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'view.name',
+            view: 'Emails.send_reset_code',
+            with: [
+                'otp' => $this->otp,
+            ]
         );
     }
+
 
     /**
      * Get the attachments for the message.
