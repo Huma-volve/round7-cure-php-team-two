@@ -32,7 +32,7 @@ class GoogleController extends Controller
                 'email_verified_at' => now(),
             ]
         );
-        $user->assignRole('patient');
+
         $token = $user->createToken($user->name)->plainTextToken;
 
         return response()->json([
