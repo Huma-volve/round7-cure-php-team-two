@@ -21,18 +21,16 @@ public function sendResetCode(Request $request){
 }
 public function resetPassword(Request $request)
 {
-    $verify=otpController::verifyOtp($request);
 
-if($verify===true)
-{
+
+
 $request->validate(['password' => ['required', 'confirmed', Password::min(8)->mixedCase()->numbers()]]);
 $user=UserController::FindByEmail($request->email);
 $user->password=Hash::make($request->password);
 $user->otp_code=null;
 $user->save();
 return response(['message'=>'Password reset successfully.']);
-}
-return $verify;
+
 
 
 }
