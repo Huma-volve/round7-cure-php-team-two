@@ -33,7 +33,6 @@ class StoreUserRequest extends FormRequest
             'latitude' => 'bail|required|numeric|between:-90,90',
             'longitude' => 'bail|required|numeric|between:-180,180',
             'image'=>'bail|nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'role_id'=>'bail|required|integer',
             'phone_number'=>'bail|required',
 
         ];

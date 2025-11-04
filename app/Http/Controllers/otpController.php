@@ -30,6 +30,7 @@ class otpController extends Controller
         $user=User::where('email',$request->email)->first();
         $otp=otpController::makeOtp();
         otpController::storeUserOtp($user,$otp);
+        return $otp;
 
 
 

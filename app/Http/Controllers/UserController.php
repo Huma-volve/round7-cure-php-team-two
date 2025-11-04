@@ -13,7 +13,7 @@ use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\PersonalAccessToken;
-
+use Illuminate\Routing\Controller;
 
 class UserController extends Controller
 {
@@ -23,14 +23,16 @@ class UserController extends Controller
      */
     public function __construct()
     {
-        //$this->middleware('auth:sanctum')->except('index', 'show');
+        $this->middleware('auth:sanctum')->except('show','index');
+
+
     }
 
     public function index()
     {
-
-        return $this->success_message(['data'=>UserResource::collection( User::paginate(5))],
-            'users retrieved successfully',200);
+       $user=UserResource::collection( User::paginate(5));
+        return response()->json(['data'=>$user,
+            'message'=>'users retrieved successfully'],200);
     }
 
 
@@ -46,7 +48,7 @@ class UserController extends Controller
             'password' => Hash::make($request->password),
             'phone_number'=>$request->phone_number,
             'image' => $image,
-            'role_id'=>$request->role_id
+
 
         ]);
 
@@ -58,7 +60,7 @@ class UserController extends Controller
     {
 
         return
-            $this->success_message(new UserResource($user),'user found',200);
+            response()->json(['data'=>new UserResource($user),'message'=>'user found'],200);
 
 
     }
@@ -93,7 +95,7 @@ class UserController extends Controller
     public function destroy( User $user)
     {
 
-//        $this->authorize('delete', $user);
+       $this->authorize('delete', $user);
 
 
         $user->delete();

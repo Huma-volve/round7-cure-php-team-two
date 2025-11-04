@@ -23,7 +23,7 @@ class AuthController extends Controller
     public function register(StoreUserRequest $request)
     {
         $user = UserController::store($request);
-
+        $user->assignRole('patient');
         $token = $user->createToken($request->name);
 
 
