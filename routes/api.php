@@ -14,14 +14,15 @@ use App\Http\Controllers\Api\PatientController;
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('bookings', [BookingController::class, 'store']);
+    Route::get('bookings/{booking}', [BookingController::class, 'show']);
+    Route::put('bookings/{booking}/update', [BookingController::class, 'update']);
+    Route::delete('bookings/{booking}/cancel', [BookingController::class, 'destroy']);
 
-Route::post('bookings', [BookingController::class, 'store']);
-Route::get('bookings/{booking}', [BookingController::class, 'show']);
-Route::put('bookings/{booking}/update', [BookingController::class, 'update']);
-Route::delete('bookings/{booking}/cancel', [BookingController::class, 'destroy']);
-
-Route::get('bookings/doctor', [BookingController::class, 'doctorBookings']);
-Route::get('bookings/patient', [BookingController::class, 'patientBookings']);
+    Route::get('doctor/bookings', [BookingController::class, 'doctorBookings']);
+    Route::get('patient/bookings', [BookingController::class, 'patientBookings']);
+});
 
 Route::controller(AuthController::class)->group(function () {
     Route::post('/register', 'register');

@@ -92,7 +92,8 @@ class BookingController extends Controller
 
     public function patientBookings()
     {
-        $bookings = Auth::user()->patient->bookings()->with('doctor.user')->get();
+        $patient = Auth::user()->patient;
+        $bookings = $patient->bookings()->with('doctor.user')->get();
         return response()->json(['message'=>"Patient bookings fetched successfully",'data'=>$bookings],200);
     }
 
