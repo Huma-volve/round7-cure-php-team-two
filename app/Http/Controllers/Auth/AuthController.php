@@ -7,11 +7,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Requests\User\LoginUserRequest;
 use App\Http\Requests\User\StoreUserRequest;
 use App\Http\Resources\UserResource;
-use App\Mail\WelcomeUser;
-use App\Messages;
-use http\Env\Response;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -24,7 +20,7 @@ class AuthController extends Controller
     {
         $user = UserController::store($request);
         $user->assignRole('patient');
-        $token = $user->createToken($request->name);
+        $token = $user->createToken($request->first_name);
 
 
         return response()->json(['data'=>new UserResource($user),'token'=>$token->plainTextToken,'message'=>'registered successfully'],201);
