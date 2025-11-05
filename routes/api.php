@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\DoctorController;
 use App\Http\Controllers\Api\PatientController;
+use App\Http\Controllers\Api\ReviewController;
+use App\Http\Controllers\Api\SessionFeedbackController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -23,29 +25,32 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('doctor/bookings', [BookingController::class, 'doctorBookings']);
     Route::get('patient/bookings', [BookingController::class, 'patientBookings']);
-});
+    // Reviews route
+    Route::post('reviews', [ReviewController::class, 'store']);
 
+    // Session Feedback
+    Route::post('session-feedback', [SessionFeedbackController::class, 'store']);
+});
+// Auth routes
 Route::controller(AuthController::class)->group(function () {
     Route::post('/register', 'register');
     Route::post('/login', 'login');
 
     Route::post('/logout', 'logout')->middleware('auth:sanctum');
 });
-
+// Password reset routes
 Route::prefix('auth')->controller(PasswordController::class)->group(function () {
     Route::post('forgot-password',  'sendResetCode');
-
-
     Route::post('reset-password',  'resetPassword');
-
 });
+// OTP routes
 Route::prefix('otp')->controller(otpController::class)->group(function () {
     Route::post('verify',  'verifyOtp');
 });
 
-
+// Google login
 Route::post('google/login', [GoogleController::class, 'LogInWithGoogle']);
-
+// Users CRUD
 Route::apiResource('users', UserController::class);
 
 
