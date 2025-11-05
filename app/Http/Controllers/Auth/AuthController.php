@@ -7,6 +7,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Requests\User\LoginUserRequest;
 use App\Http\Requests\User\StoreUserRequest;
 use App\Http\Resources\UserResource;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -27,12 +28,14 @@ class AuthController extends Controller
     }
 
 
-    public function login(LoginUserRequest $request): JsonResponse
+    public function login(LoginUserRequest $request)
     {
 
 
 
-        $user = UserController::FindByEmail($request->email);
+        $user = User::withTrashed()->where('email', $request->email)->first();
+
+
 
 
         if (! $user || ! Hash::check($request->password, $user->password)) {
