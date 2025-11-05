@@ -82,6 +82,7 @@ class UserController extends Controller
     public function update(UpdateUserRequest $request)
     {
         $user = auth()->user();
+        $this->authorize('update',$user);
         $userData = $request->only('name', 'email');
 
 
@@ -103,6 +104,7 @@ class UserController extends Controller
     {
 
         $user = auth()->user();
+        $this->authorize('delete', $user);
         $user->forceDelete();
         FileController::deleteFile($user->image,'images/users');
         PersonalAccessToken::where('tokenable_id', $user->id)->delete();//to delete all the tokens for the user
