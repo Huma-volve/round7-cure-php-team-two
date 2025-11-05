@@ -7,6 +7,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Requests\User\LoginUserRequest;
 use App\Http\Requests\User\StoreUserRequest;
 use App\Http\Resources\UserResource;
+use App\Models\Patient;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
@@ -22,6 +23,7 @@ class AuthController extends Controller
         $user = UserController::store($request);
         $user->assignRole('patient');
         $token = $user->createToken($request->name);
+        Patient::create(['user_id'=>$user->id]);
 
 
         return response()->json(['data'=>new UserResource($user),'token'=>$token->plainTextToken,'message'=>'registered successfully'],201);
