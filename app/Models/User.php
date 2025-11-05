@@ -75,11 +75,7 @@ class User extends Authenticatable
     {
         return $this->hasMany(Notification::class);
     }
-    public function messages()
-    {
-        return $this->hasMany(Message::class);
-    }
-
+    
     public function favorites()
     {
         return $this->hasMany(Favorite::class);
@@ -89,4 +85,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(SearchHistory::class);
     }
+    public function chats()
+    {
+        return $this->hasMany(Chat::class,'created_by');
+    }
+
 }

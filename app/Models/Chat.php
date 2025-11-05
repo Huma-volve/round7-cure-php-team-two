@@ -10,18 +10,28 @@ class Chat extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'patient_id',
-        'doctor_id',
+        'is_private',
+        'created_by',
     ];
 
 
-    public function patient()
+    public function participants()
     {
-        return $this->belongsTo(Patient::class);
+        return $this->hasMany(Chat_Participant::class,'chat_id');
+    }
+    public function messages()
+    {
+        return $this->hasMany(Message::class, 'chat_id');
     }
 
-    public function doctor()
+       public function lastMessage()
     {
-        return $this->belongsTo(Doctor::class);
+        return $this->hasOne(Message::class, 'chat_id')->latest('created_at');
+    }
+
+    public function scopeHasParticipant($query, int $userId){
+        return $query->whereHas('participants', function($q) use ($userId){
+            $q->where('user_id',$userId);
+        });
     }
 }

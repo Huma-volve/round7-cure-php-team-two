@@ -40,7 +40,7 @@ class Doctor extends Model
 
     public function chats()
     {
-        return $this->hasMany(Chat::class);
+        return $this->hasMany(Chat::class, 'doctor_id');
     }
 
     public function sessionFeedbacks()

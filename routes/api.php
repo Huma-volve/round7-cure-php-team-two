@@ -7,6 +7,8 @@ use App\Http\Controllers\otpController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\ChatController;
+use App\Http\Controllers\Api\MessageController;
 
 use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\StripeController;
@@ -26,6 +28,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('doctor/bookings', [BookingController::class, 'doctorBookings']);
     Route::get('patient/bookings', [BookingController::class, 'patientBookings']);
+
+         Route::apiResource('chat', ChatController::class)->only(['index','store','show']);
+    Route::apiResource('chat_message', MessageController::class)->only(['index','store']);
 });
 
 Route::post('/stripe/webhook', [StripeController::class, 'handleWebhook']);
@@ -52,5 +57,7 @@ Route::prefix('otp')->controller(otpController::class)->group(function () {
 Route::post('google/login', [GoogleController::class, 'LogInWithGoogle']);
 
 Route::apiResource('users', UserController::class);
+
+
 
 
