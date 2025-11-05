@@ -7,11 +7,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\SoftDeletes;
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasApiTokens,SoftDeletes;
+    use HasFactory, Notifiable, HasApiTokens, SoftDeletes, HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -20,7 +20,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
-        'phone',
+        'phone_number',
         'email',
         'password',
         'profile_photo',
@@ -40,6 +40,7 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+    protected $appends = ['full_name'];
 
     /**
      * Get the attributes that should be cast.
@@ -53,7 +54,10 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-
+    public function getFullNameAttribute(): string
+    {
+        return $this->first_name . ' ' . $this->last_name;
+    }
     public function doctor()
     {
         return $this->hasOne(Doctor::class);
@@ -71,11 +75,7 @@ class User extends Authenticatable
     {
         return $this->hasMany(Notification::class);
     }
-    public function messages()
-    {
-        return $this->hasMany(Message::class, 'sender_id');
-    }
-
+    
     public function favorites()
     {
         return $this->hasMany(Favorite::class);
@@ -87,7 +87,7 @@ class User extends Authenticatable
     }
     public function chats()
     {
-        return $this->hasMany(Chat::class);
+        return $this->hasMany(Chat::class,'created_by');
     }
 
 }
