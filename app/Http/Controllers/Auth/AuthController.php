@@ -20,7 +20,7 @@ class AuthController extends Controller
     {
         $user = UserController::store($request);
         $user->assignRole('patient');
-        $token = $user->createToken($request->first_name);
+        $token = $user->createToken($request->name);
 
 
         return response()->json(['data'=>new UserResource($user),'token'=>$token->plainTextToken,'message'=>'registered successfully'],201);

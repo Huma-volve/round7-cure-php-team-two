@@ -41,6 +41,7 @@ return [
 
     'name.required' => 'The name field is required.',
     'name.max' => 'The name must not exceed 255 characters.',
+
     'email.required' => 'The email field is required.',
     'email.exists' => 'The email address does not exist.',
     'email.email' => 'Please provide a valid email address.',
@@ -61,6 +62,7 @@ return [
     'longitude.between' => 'The longitude must be between -180 and 180.',
     'image.required' => 'The image field is required.',
     'phone_number.required' => 'The phone number field is required.',
+    'phone_number.unique' => 'This phone number is already taken.',
 
 ],
 
