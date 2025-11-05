@@ -18,23 +18,18 @@ class ChatController extends Controller
      * Display a listing of the resource.
      */
    // عرض كل الشات للمستخدم
-   public function index(GetChatRequest $request): JsonResponse
-    {
-        $data = $request->validated();
+  public function index(GetChatRequest $request): JsonResponse
+{
+    // بنجيب الشاتات اللي المستخدم الحالي طرف فيها فقط
+    $chats = Chat::hasParticipant(auth()->id())
+        ->whereHas('messages')
+        ->with('lastMessage.user', 'participants.user')
+        ->latest('updated_at')
+        ->get();
 
-        $isPrivate = 1;
-        if ($request->has('is_private')) {
-            $isPrivate = (int)$data['is_private'];
-        }
+    return $this->success($chats);
+}
 
-        $chats = Chat::where('is_private', $isPrivate)
-            ->hasParticipant(auth()->user()->id)
-            ->whereHas('messages')
-            ->with('lastMessage.user', 'participants.user')
-            ->latest('updated_at')
-            ->get();
-        return $this->success($chats);
-    }
 
     /**
      * Show the form for creating a new resource.
@@ -73,19 +68,19 @@ class ChatController extends Controller
     }
 
     
-      private function getPreviousChat(int $otherUserId) : mixed {
+     private function getPreviousChat(int $otherUserId): ?Chat
+{
+    $userId = auth()->id();
 
-        $userId = auth()->user()->id;
+    return Chat::whereHas('participants', function ($query) use ($userId) {
+            $query->where('user_id', $userId);
+        })
+        ->whereHas('participants', function ($query) use ($otherUserId) {
+            $query->where('user_id', $otherUserId);
+        })
+        ->first();
+}
 
-        return Chat::where('is_private',1)
-            ->whereHas('participants', function ($query) use ($userId){
-                $query->where('user_id',$userId);
-            })
-            ->whereHas('participants', function ($query) use ($otherUserId){
-                $query->where('user_id',$otherUserId);
-            })
-            ->first();
-    }
 
 
     /**
