@@ -23,8 +23,8 @@ class StoreUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
+
 
             'email' => 'required|string|email|max:255|unique:users',
             'password' => ['required', Password::min(8)
@@ -32,6 +32,7 @@ class StoreUserRequest extends FormRequest
                 ->mixedCase()
                 ->numbers()
                 ->symbols()],
+
             'latitude' => 'required|numeric|between:-90,90',
             'longitude' => 'required|numeric|between:-180,180',
             'image'=>'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
