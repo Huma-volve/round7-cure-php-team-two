@@ -19,11 +19,7 @@ class otpController extends Controller
         $user->otp_expire=now()->addMinutes(10);
         $user->save();
     }
-    public static function verifyExpireOtp(Request $request)
-    {
 
-
-    }
     public static function sendOTPCode(Request $request)
     {
         $request->validate(['email' => 'required|email|exists:users,email']);

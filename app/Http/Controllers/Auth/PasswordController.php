@@ -6,8 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\otpController;
 use App\Http\Controllers\UserController;
 use App\Mail\SendResetPasswordEmail;
-use App\Models\User;
-use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
