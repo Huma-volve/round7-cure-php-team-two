@@ -23,7 +23,9 @@ class StoreUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+
             'email' => 'required|string|email|max:255|unique:users',
             'password' => ['required', Password::min(8)
                 ->letters()
@@ -33,7 +35,7 @@ class StoreUserRequest extends FormRequest
             'latitude' => 'required|numeric|between:-90,90',
             'longitude' => 'required|numeric|between:-180,180',
             'image'=>'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'phone_number'=>'required',
+            'phone_number'=>'required|unique:users,phone_number',
 
         ];
     }
