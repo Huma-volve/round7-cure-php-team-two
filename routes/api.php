@@ -20,12 +20,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('bookings/{booking}', [BookingController::class, 'show']);
     Route::put('bookings/{booking}/update', [BookingController::class, 'update']);
     Route::delete('bookings/{booking}/cancel', [BookingController::class, 'destroy']);
-    //payment routes
-    Route::post('/bookings/checkout/{bookingId}', [StripeController::class, 'checkout']);
-
-
     Route::get('doctor/bookings', [BookingController::class, 'doctorBookings']);
     Route::get('patient/bookings', [BookingController::class, 'patientBookings']);
+    //payment routes
+    Route::post('/bookings/checkout/{bookingId}', [StripeController::class, 'checkout']);
 
     Route::apiResource('chat', ChatController::class)->only(['index','store','show']);
     Route::apiResource('chat_message', MessageController::class)->only(['index','store']);
@@ -42,8 +40,6 @@ Route::controller(AuthController::class)->group(function () {
 
 Route::prefix('auth')->controller(PasswordController::class)->group(function () {
     Route::post('forgot-password',  'sendResetCode');
-
-
     Route::post('reset-password',  'resetPassword');
 
 });
@@ -55,6 +51,7 @@ Route::prefix('otp')->controller(otpController::class)->group(function () {
 Route::post('google/login', [GoogleController::class, 'LogInWithGoogle']);
 
 Route::apiResource('users', UserController::class);
+
 
 
 
