@@ -12,7 +12,15 @@ use App\Http\Controllers\Api\ChatController;
 use App\Http\Controllers\Api\MessageController;
 
 use App\Http\Controllers\Api\BookingController;
+<<<<<<< HEAD
+//use App\Http\Controllers\Api\DoctorController;
+use App\Http\Controllers\Api\PatientController;
+use App\Http\Controllers\Api\HomeController;
+use App\Http\Controllers\Api\DoctorController;
+
+=======
 use App\Http\Controllers\Api\StripeController;
+>>>>>>> main
 
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -42,14 +50,19 @@ Route::controller(AuthController::class)->group(function () {
 });
 
 Route::prefix('auth')->controller(PasswordController::class)->group(function () {
-    Route::post('forgot-password',  'sendResetCode');
+    Route::post('forgot-password', 'sendResetCode');
 
+<<<<<<< HEAD
+    // Endpoint لإدخال الكود والباسورد الجديد
+    Route::post('reset-password', 'resetPassword');
+=======
 
     Route::post('reset-password',  'resetPassword');
 
 });
 Route::prefix('otp')->controller(otpController::class)->group(function () {
     Route::post('verify',  'verifyOtp');
+>>>>>>> main
 });
 
 
@@ -65,5 +78,12 @@ Route::prefix('users')->controller(UserController::class)->group(function () {
 });
 
 
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/home/doctors', [HomeController::class, 'nearby']);
+    Route::get('/doctors/{doctor}', [DoctorController::class, 'show']);
+    Route::get('/doctors/{doctor}/reviews', [DoctorController::class, 'reviews']);
+    Route::post('/doctors/{doctor}/favorite', [DoctorController::class, 'toggleFavorite']);
+});
 
 
