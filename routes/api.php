@@ -14,9 +14,7 @@ use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\StripeController;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+
 Route::middleware('auth:sanctum')->group(function () {
     //booking routes
     Route::post('bookings', [BookingController::class, 'store']);
@@ -30,8 +28,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('doctor/bookings', [BookingController::class, 'doctorBookings']);
     Route::get('patient/bookings', [BookingController::class, 'patientBookings']);
 
-         Route::apiResource('chat', ChatController::class)->only(['index','store','show']);
+    Route::apiResource('chat', ChatController::class)->only(['index','store','show']);
     Route::apiResource('chat_message', MessageController::class)->only(['index','store']);
+    ///chat
 });
 
 Route::post('/stripe/webhook', [StripeController::class, 'handleWebhook']);
@@ -39,7 +38,6 @@ Route::post('/stripe/webhook', [StripeController::class, 'handleWebhook']);
 Route::controller(AuthController::class)->group(function () {
     Route::post('/register', 'register');
     Route::post('/login', 'login');
-
     Route::post('/logout', 'logout')->middleware('auth:sanctum');
 });
 
