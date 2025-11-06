@@ -46,15 +46,22 @@ class UserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'latitude',$request->latitude,
+            'longitude',$request->longitude,
             'phone_number'=>$request->phone_number,
-            'image' => $image,
+            'profile_photo' => $image,
 
 
         ]);
 
         return $user;
     }
-
+ public function getAuthenticatedUser()
+ {
+        $user = auth()->user();
+        return response()->json(['data'=>new UserResource($user),
+            'message'=>'user retrieved successfully'],200);
+ }
 
     public function show(User $user)
     {
@@ -72,13 +79,14 @@ class UserController extends Controller
     }
 
 
-    public function update(UpdateUserRequest $request, User $user)
+    public function update(UpdateUserRequest $request)
     {
-        $this->authorize('update', $user);
+        $user = auth()->user();
+        $this->authorize('update',$user);
         $userData = $request->only('name', 'email');
 
 
-        $user->image = FileController::updateFile($request->file('image'), $user->image,'images/users');
+        $user->profile_photo = FileController::updateFile($request->file('image'), $user->profile_photo,'images/users');
         $user->save();
 
 
@@ -92,13 +100,12 @@ class UserController extends Controller
         return response()->json([new UserResource($user), 'User updated successfully'], 200);
     }
 
-    public function destroy( User $user)
+    public function destroy( )
     {
 
-       $this->authorize('delete', $user);
-
-
-        $user->delete();
+        $user = auth()->user();
+        $this->authorize('delete', $user);
+        $user->forceDelete();
         FileController::deleteFile($user->image,'images/users');
         PersonalAccessToken::where('tokenable_id', $user->id)->delete();//to delete all the tokens for the user
         return response()->json(['data'=>null,'message'=>'user deleted successfully'], 200);

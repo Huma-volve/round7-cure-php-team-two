@@ -26,9 +26,15 @@ class UserFactory extends Factory
         return [
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
-            'email_verified_at' => now(),
+            'google_id' => null,
             'password' => static::$password ??= Hash::make('password'),
-            'remember_token' => Str::random(10),
+            'phone_number' => $this->faker->unique()->numerify('01#########'),
+            'profile_photo' => null,
+            'latitude' => $this->faker->latitude(29.8, 30.2), // around Cairo
+            'longitude' => $this->faker->longitude(31.0, 31.6),
+            'last_login_at' => $this->faker->optional()->dateTimeBetween('-30 days', 'now'),
+            'otp_code' => null,
+            'otp_expires_at' => null,
         ];
     }
 
@@ -37,7 +43,7 @@ class UserFactory extends Factory
      */
     public function unverified(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn(array $attributes) => [
             'email_verified_at' => null,
         ]);
     }

@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\otpController;
+use App\Http\Controllers\SMSController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -12,6 +13,8 @@ use App\Http\Controllers\Api\MessageController;
 
 use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\StripeController;
+use App\Http\Controllers\Api\HomeController;
+use App\Http\Controllers\Api\DoctorController;
 
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -39,20 +42,43 @@ Route::controller(AuthController::class)->group(function () {
 });
 
 Route::prefix('auth')->controller(PasswordController::class)->group(function () {
+
     Route::post('forgot-password',  'sendResetCode');
+
+    Route::post('forgot-password', 'sendResetCode');
+
+    // Endpoint لإدخال الكود والباسورد الجديد
+    Route::post('reset-password', 'resetPassword');
+
+
     Route::post('reset-password',  'resetPassword');
 
 });
 Route::prefix('otp')->controller(otpController::class)->group(function () {
     Route::post('verify',  'verifyOtp');
+
 });
 
 
 Route::post('google/login', [GoogleController::class, 'LogInWithGoogle']);
 
-Route::apiResource('users', UserController::class);
+//Route::apiResource('users', UserController::class);
+Route::prefix('users')->controller(UserController::class)->group(function () {
+    Route::get('/', 'index');
+    Route::get('/{user}', 'show');
+
+    Route::patch('/update', 'update');
+    Route::delete('/delete', 'destroy');
+});
 
 
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/home/doctors', [HomeController::class, 'nearby']);
+    Route::get('/doctors/{doctor}', [DoctorController::class, 'show']);
+    Route::get('/doctors/{doctor}/reviews', [DoctorController::class, 'reviews']);
+    Route::post('/doctors/{doctor}/favorite', [DoctorController::class, 'toggleFavorite']);
+});
 
 
 
