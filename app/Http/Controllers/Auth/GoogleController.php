@@ -29,7 +29,7 @@ class GoogleController extends Controller
                 'google_id' => $googleUser->getId(),
                 'password' => encrypt(random_bytes(16)),
 
-                'email_verified_at' => now(),
+
             ]
         );
 

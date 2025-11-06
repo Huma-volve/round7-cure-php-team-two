@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\otpController;
+use App\Http\Controllers\SMSController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -56,7 +57,14 @@ Route::prefix('otp')->controller(otpController::class)->group(function () {
 
 Route::post('google/login', [GoogleController::class, 'LogInWithGoogle']);
 
-Route::apiResource('users', UserController::class);
+//Route::apiResource('users', UserController::class);
+Route::prefix('users')->controller(UserController::class)->group(function () {
+    Route::get('/', 'index');
+    Route::get('/{user}', 'show');
+
+    Route::patch('/update', 'update');
+    Route::delete('/delete', 'destroy');
+});
 
 
 
