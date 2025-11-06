@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Review extends Model
 {
 
-    use SoftDeletes;
+    use SoftDeletes, HasFactory;
     protected $fillable = [
         'patient_id',
         'doctor_id',
@@ -24,5 +25,9 @@ class Review extends Model
     public function doctor()
     {
         return $this->belongsTo(Doctor::class);
+    }
+    public function user()
+    {
+        return $this->patient->user();
     }
 }

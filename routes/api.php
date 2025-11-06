@@ -8,8 +8,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Api\BookingController;
-use App\Http\Controllers\Api\DoctorController;
+//use App\Http\Controllers\Api\DoctorController;
 use App\Http\Controllers\Api\PatientController;
+use App\Http\Controllers\Api\HomeController;
+use App\Http\Controllers\Api\DoctorController;
+
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -31,15 +34,22 @@ Route::controller(AuthController::class)->group(function () {
 });
 
 Route::prefix('auth')->controller(PasswordController::class)->group(function () {
-    Route::post('forgot-password',  'sendResetCode');
+    Route::post('forgot-password', 'sendResetCode');
 
-// Endpoint لإدخال الكود والباسورد الجديد
-    Route::post('reset-password',  'resetPassword');
+    // Endpoint لإدخال الكود والباسورد الجديد
+    Route::post('reset-password', 'resetPassword');
 });
 
 
 Route::post('google/login', [GoogleController::class, 'LogInWithGoogle']);
 
 Route::apiResource('users', UserController::class);
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/home/doctors', [HomeController::class, 'nearby']);
+    Route::get('/doctors/{doctor}', [DoctorController::class, 'show']);
+    Route::get('/doctors/{doctor}/reviews', [DoctorController::class, 'reviews']);
+    Route::post('/doctors/{doctor}/favorite', [DoctorController::class, 'toggleFavorite']);
+});
 
 

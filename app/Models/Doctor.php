@@ -4,11 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Builder;
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+
 
 class Doctor extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, HasRoles, HasFactory;
 
     protected $fillable = [
         'user_id',
@@ -17,6 +20,16 @@ class Doctor extends Model
         'session_price',
         'available_slots',
     ];
+    protected $appends = ['average_rating', 'reviews_count'];
+
+    public function getAverageRatingAttribute()
+    {
+        return $this->reviews()->avg('rating') ?? 0;
+    }
+    public function getReviewsCountAttribute()
+    {
+        return (int) $this->reviews()->count();
+    }
 
     public function user()
     {
@@ -49,8 +62,20 @@ class Doctor extends Model
     }
 
     public function favorites()
-{
-    return $this->morphMany(Favorite::class, 'favoritable');
-}
+    {
+        return $this->morphMany(Favorite::class, 'favoritable', 'favoritable_id', 'user_id')->withTimestamps();
+    }
+    public function scopeNearby(Builder $query, float $lat, float $lng, int $radiusKm = 10)
+    {
+        // Haversine using users.latitude/users.longitude
+        $haversine = "(6371 * acos( cos( radians(?) ) * cos( radians(users.latitude) ) * cos( radians(users.longitude) - radians(?) ) + sin( radians(?) ) * sin( radians(users.latitude) ) ))";
+
+        return $query->join('users', 'doctors.user_id', '=', 'users.id')
+            ->selectRaw("doctors.* , users.latitude as clinic_lat, users.longitude as clinic_lng, users.phone_number as clinic_phone, users.profile_photo as clinic_avatar, $haversine AS distance", [$lat, $lng, $lat])
+            ->whereNotNull('users.latitude')
+            ->whereNotNull('users.longitude')
+            ->having('distance', '<=', $radiusKm)
+            ->orderBy('distance');
+    }
 
 }
