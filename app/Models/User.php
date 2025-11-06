@@ -70,10 +70,6 @@ class User extends Authenticatable
     {
         return $this->hasMany(Notification::class);
     }
-    public function messages()
-    {
-        return $this->hasMany(Message::class);
-    }
 
     public function favorites()
     {
@@ -102,4 +98,9 @@ class User extends Authenticatable
             ->where('favoritable_id', $doctor->id)
             ->exists();
     }
+    public function chats()
+    {
+        return $this->hasMany(Chat::class, 'created_by');
+    }
+
 }

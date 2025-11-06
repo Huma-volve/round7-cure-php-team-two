@@ -16,14 +16,10 @@ class otpController extends Controller
     }
     public static function storeUserOtp(User $user,$otp){
         $user->otp_code=$otp;
-        $user->otp_expire=now()->addMinutes(10);
+        $user->otp_expires_at=now()->addMinutes(10);
         $user->save();
     }
-    public static function verifyExpireOtp(Request $request)
-    {
 
-
-    }
     public static function sendOTPCode(Request $request)
     {
         $request->validate(['email' => 'required|email|exists:users,email']);
@@ -38,6 +34,7 @@ class otpController extends Controller
 
     public static function verifyOtp(Request $request)
     {
+        $request->validate(['otp'=>'required|integer']);
         $response=fn($message)=>response()->json([
             'message'=>$message,
         ],200);
@@ -47,11 +44,11 @@ class otpController extends Controller
           return $response('invalid code , please try again');
       }
 
-        $time_diff=DateController::gettDiffInMinutes($user->otp_expire,Carbon::now());
-      if($time_diff>10)
+
+      if(now()->greaterThan($user->otp_expires_at))
       {
           return $response('expired code , please try again');
       }
-      return true;
+      return response()->json('true',200);
     }
 }

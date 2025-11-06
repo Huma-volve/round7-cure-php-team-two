@@ -16,6 +16,8 @@ class Booking extends Model
         'status',
         'payment_method',
         'payment_status',
+        'stripe_payment_intent',
+        'stripe_session_id',
     ];
 
     public function patient()
