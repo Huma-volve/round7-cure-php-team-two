@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('chats', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('patient_id')->constrained('patients');
-            $table->foreignId('doctor_id')->constrained('doctors');
+            $table->foreignId('created_by')->constrained('users')->cascadeOnDelete();
+            $table->boolean('is_private')->default(true);
             $table->timestamps();
             $table->softDeletes();
         });

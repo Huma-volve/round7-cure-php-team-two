@@ -23,7 +23,7 @@ class StoreReviewRequest extends FormRequest
     {
        return [
             'doctor_id' => 'required|exists:doctors,id',
-             'patient_id' => 'required|exists:patients,id',
+            //  'patient_id' => 'required|exists:patients,id',
             'rating' => 'required|integer|min:1|max:5',
             'comment' => 'nullable|string|max:1000',
         ];

@@ -4,10 +4,9 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\otpController;
+use App\Http\Controllers\SMSController;
 use App\Http\Controllers\UserController;
 use App\Mail\SendResetPasswordEmail;
-use App\Models\User;
-use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -17,7 +16,7 @@ class PasswordController extends Controller
 {
 public function sendResetCode(Request $request){
     $otp=otpController::sendOTPCode($request);
-    Mail::to($request->email)->queue(new SendResetPasswordEmail($otp));
+    //SMSController::sendSMS($request->email,"Your password reset code is: $otp");
 }
 public function resetPassword(Request $request)
 {

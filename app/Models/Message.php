@@ -11,19 +11,20 @@ class Message extends Model
 
     protected $fillable = [
         'chat_id',
-        'sender_id',
+        'user_id',
         'message',
         'is_read',
     ];
+    protected $touches=['chat'];
 
     public function chat()
     {
-        return $this->belongsTo(Chat::class);
+        return $this->belongsTo(Chat::class, 'chat_id');
     }
 
-    public function sender()
+    public function user()
     {
-        return $this->belongsTo(User::class, 'sender_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function notifications()

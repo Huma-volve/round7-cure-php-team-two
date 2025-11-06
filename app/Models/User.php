@@ -40,7 +40,6 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
-    protected $appends = ['full_name'];
 
     /**
      * Get the attributes that should be cast.
@@ -53,10 +52,6 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
-    }
-    public function getFullNameAttribute(): string
-    {
-        return $this->first_name . ' ' . $this->last_name;
     }
     public function doctor()
     {
@@ -75,10 +70,6 @@ class User extends Authenticatable
     {
         return $this->hasMany(Notification::class);
     }
-    public function messages()
-    {
-        return $this->hasMany(Message::class);
-    }
 
     public function favorites()
     {
@@ -89,4 +80,27 @@ class User extends Authenticatable
     {
         return $this->hasMany(SearchHistory::class);
     }
+    public function favoriteDoctors()
+    {
+        return $this->morphedByMany(
+            Doctor::class,
+            'favoritable',
+            'favorites',
+            'user_id',
+            'favoritable_id'
+        )->withTimestamps();
+    }
+
+    public function isFavorite(Doctor $doctor): bool
+    {
+        return $this->favorites()
+            ->where('favoritable_type', Doctor::class)
+            ->where('favoritable_id', $doctor->id)
+            ->exists();
+    }
+    public function chats()
+    {
+        return $this->hasMany(Chat::class, 'created_by');
+    }
+
 }
