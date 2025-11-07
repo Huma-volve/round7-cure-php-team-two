@@ -58,4 +58,4 @@ Route::prefix('otp')->controller(otpController::class)->group(function () {
 });
 
 Route::post('google/login', [GoogleController::class, 'LogInWithGoogle']);
-Route::delete('/delete', 'destroy');
+// <!-- Route::delete('/delete', 'destroy'); -->
