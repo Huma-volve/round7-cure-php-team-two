@@ -1,11 +1,9 @@
-
 <?php
-
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\otpController;
-use App\Http\Controllers\SMSController;
+
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -14,7 +12,7 @@ use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\HomeController;
 use App\Http\Controllers\Api\DoctorController;
-use App\Http\Controllers\Api\PatientController;
+
 use App\Http\Controllers\Api\StripeController;
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -58,4 +56,14 @@ Route::prefix('otp')->controller(otpController::class)->group(function () {
 });
 
 Route::post('google/login', [GoogleController::class, 'LogInWithGoogle']);
-// <!-- Route::delete('/delete', 'destroy'); -->
+Route::prefix('users')->controller(UserController::class)->group(function () {
+    Route::get('/', 'index');
+    Route::get('/{user}', 'show');
+    Route::patch('/update', 'update');
+    Route::delete('/delete', 'destroy');
+});
+
+
+
+
+

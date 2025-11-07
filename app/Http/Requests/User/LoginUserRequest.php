@@ -24,8 +24,8 @@ class LoginUserRequest extends FormRequest
     {
         return [
 
-            'email' => 'bail|required|string|email|max:255|exists:users,email',
-            'password' => ['bail','required', Password::min(8)
+            'email' => 'required|string|email|max:255|exists:users,email',
+            'password' => ['required', Password::min(8)
                 ->letters()
                 ->mixedCase()
                 ->numbers()
