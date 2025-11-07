@@ -24,11 +24,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('bookings/{booking}/update', [BookingController::class, 'update']);
     Route::delete('bookings/{booking}/cancel', [BookingController::class, 'destroy']);
 
-    // Payment routes
-    Route::post('/bookings/checkout/{bookingId}', [StripeController::class, 'checkout']);
-
     Route::get('doctor/bookings', [BookingController::class, 'doctorBookings']);
     Route::get('patient/bookings', [BookingController::class, 'patientBookings']);
+    //payment routes
+    Route::post('/bookings/checkout/{bookingId}', [StripeController::class, 'checkout']);
 
     // Chat routes
     Route::apiResource('chat', ChatController::class)->only(['index','store','show']);
@@ -50,7 +49,7 @@ Route::controller(AuthController::class)->group(function () {
 });
 
 Route::prefix('auth')->controller(PasswordController::class)->group(function () {
-    Route::post('forgot-password', 'sendResetCode');
+    Route::post('forgot-password',  'sendResetCode');
     Route::post('reset-password', 'resetPassword');
 });
 
@@ -59,10 +58,4 @@ Route::prefix('otp')->controller(otpController::class)->group(function () {
 });
 
 Route::post('google/login', [GoogleController::class, 'LogInWithGoogle']);
-
-Route::prefix('users')->controller(UserController::class)->group(function () {
-    Route::get('/', 'index');
-    Route::get('/{user}', 'show');
-    Route::patch('/update', 'update');
-    Route::delete('/delete', 'destroy');
-});
+Route::delete('/delete', 'destroy');

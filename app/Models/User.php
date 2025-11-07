@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Notifications\Messagesent;
 class User extends Authenticatable
 {
     use HasFactory, Notifiable, HasApiTokens, SoftDeletes, HasRoles;
@@ -101,6 +102,14 @@ class User extends Authenticatable
     public function chats()
     {
         return $this->hasMany(Chat::class, 'created_by');
+    }
+
+      public function routeNotificationForOneSignal() : array{
+        return ['tags'=>['key'=>'userId','relation'=>'=', 'value'=>(string)($this->id)]];
+    }
+
+     public function sendNewMessageNotification(array $data) : void {
+        $this->notify(new Messagesent($data));
     }
 
 }
