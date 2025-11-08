@@ -1,10 +1,9 @@
 <?php
-
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\otpController;
-use App\Http\Controllers\SMSController;
+
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -13,7 +12,9 @@ use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\HomeController;
 use App\Http\Controllers\Api\DoctorController;
-use App\Http\Controllers\Api\PatientController;
+use App\Http\Controllers\Api\ReviewController;
+use App\Http\Controllers\Api\SearchController;
+use App\Http\Controllers\Api\SessionFeedbackController;
 use App\Http\Controllers\Api\StripeController;
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -28,7 +29,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('bookings/{booking}', [BookingController::class, 'show']);
     Route::put('bookings/{booking}/update', [BookingController::class, 'update']);
     Route::delete('bookings/{booking}/cancel', [BookingController::class, 'destroy']);
-    
+
     //payment routes
     Route::post('/bookings/checkout/{bookingId}', [StripeController::class, 'checkout']);
 
@@ -48,11 +49,10 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 
-    // Payment routes
-    Route::post('/bookings/checkout/{bookingId}', [StripeController::class, 'checkout']);
-
     Route::get('doctor/bookings', [BookingController::class, 'doctorBookings']);
     Route::get('patient/bookings', [BookingController::class, 'patientBookings']);
+    //payment routes
+    Route::post('/bookings/checkout/{bookingId}', [StripeController::class, 'checkout']);
 
     // Chat routes
     Route::apiResource('chat', ChatController::class)->only(['index','store','show']);
@@ -74,7 +74,7 @@ Route::controller(AuthController::class)->group(function () {
 });
 
 Route::prefix('auth')->controller(PasswordController::class)->group(function () {
-    Route::post('forgot-password', 'sendResetCode');
+    Route::post('forgot-password',  'sendResetCode');
     Route::post('reset-password', 'resetPassword');
 });
 
@@ -83,10 +83,21 @@ Route::prefix('otp')->controller(otpController::class)->group(function () {
 });
 
 Route::post('google/login', [GoogleController::class, 'LogInWithGoogle']);
-
 Route::prefix('users')->controller(UserController::class)->group(function () {
     Route::get('/', 'index');
     Route::get('/{user}', 'show');
     Route::patch('/update', 'update');
     Route::delete('/delete', 'destroy');
 });
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/search', [SearchController::class, 'search']);
+    Route::get('/search/history', [SearchController::class, 'history']);
+    Route::delete('/search/history', [SearchController::class, 'clearHistory']);
+});
+
+
+
+
+
+
