@@ -1,4 +1,3 @@
-
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
@@ -23,6 +22,31 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('bookings/{booking}', [BookingController::class, 'show']);
     Route::put('bookings/{booking}/update', [BookingController::class, 'update']);
     Route::delete('bookings/{booking}/cancel', [BookingController::class, 'destroy']);
+    Route::middleware('auth:sanctum')->group(function () {
+    //booking routes
+    Route::post('bookings', [BookingController::class, 'store']);
+    Route::get('bookings/{booking}', [BookingController::class, 'show']);
+    Route::put('bookings/{booking}/update', [BookingController::class, 'update']);
+    Route::delete('bookings/{booking}/cancel', [BookingController::class, 'destroy']);
+    
+    //payment routes
+    Route::post('/bookings/checkout/{bookingId}', [StripeController::class, 'checkout']);
+
+    //doctor & patient bookings
+    Route::get('doctor/bookings', [BookingController::class, 'doctorBookings']);
+    Route::get('patient/bookings', [BookingController::class, 'patientBookings']);
+
+    //chat system
+    Route::apiResource('chat', ChatController::class)->only(['index','store','show']);
+    Route::apiResource('chat_message', MessageController::class)->only(['index','store']);
+
+    //reviews
+    Route::post('reviews', [ReviewController::class, 'store']);
+
+    //session feedback
+    Route::post('session-feedback', [SessionFeedbackController::class, 'store']);
+});
+
 
     // Payment routes
     Route::post('/bookings/checkout/{bookingId}', [StripeController::class, 'checkout']);
