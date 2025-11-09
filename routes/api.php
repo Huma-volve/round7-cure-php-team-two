@@ -12,6 +12,8 @@ use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\HomeController;
 use App\Http\Controllers\Api\DoctorController;
+use App\Http\Controllers\Api\ReviewController;
+use App\Http\Controllers\Api\SessionFeedbackController;
 
 use App\Http\Controllers\Api\StripeController;
 
@@ -27,7 +29,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('bookings/{booking}', [BookingController::class, 'show']);
     Route::put('bookings/{booking}/update', [BookingController::class, 'update']);
     Route::delete('bookings/{booking}/cancel', [BookingController::class, 'destroy']);
-    
+
     //payment routes
     Route::post('/bookings/checkout/{bookingId}', [StripeController::class, 'checkout']);
 
