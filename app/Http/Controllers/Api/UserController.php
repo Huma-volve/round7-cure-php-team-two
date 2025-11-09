@@ -1,19 +1,16 @@
 <?php
 
-namespace App\Http\Controllers;
-
-
+namespace App\Http\Controllers\Api;
+use App\Http\Controllers\Controller;
 
 use App\Http\Controllers\Files\FileController;
 use App\Http\Requests\User\StoreUserRequest;
 use App\Http\Requests\User\UpdateUserRequest;
-
-
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\PersonalAccessToken;
-use Illuminate\Routing\Controller;
+// use Illuminate\Routing\Controller;
 
 class UserController extends Controller
 {
