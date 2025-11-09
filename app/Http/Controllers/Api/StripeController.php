@@ -38,39 +38,48 @@ class StripeController extends Controller
     return response()->json(['url' => $session->url]);
 }
 public function handleWebhook(Request $request)
-    {
-        $payload = $request->getContent();
-        $event = json_decode($payload);
+{
+    Stripe::setApiKey(env('STRIPE_SECRET'));
 
-        Log::info('Stripe webhook received: ' . $payload);
+    $payload = $request->getContent();
+    $sigHeader = $request->header('Stripe-Signature');
+    $endpointSecret = env('STRIPE_WEBHOOK_SECRET');
 
-        if (isset($event->type) && $event->type === 'checkout.session.completed') {
-            $session = $event->data->object;
-
-            $bookingId = $session->metadata->booking_id ?? null;
-
-            if ($bookingId) {
-                $booking = Booking::find($bookingId);
-
-                if ($booking) {
-                    $booking->update([
-                        'status' => 'Confirmed',
-                        'payment_status' => 'Paid',
-                        'stripe_session_id' => $session->id,
-                        'stripe_payment_intent' => $session->payment_intent,
-                    ]);
-
-                    Log::info('✅ Booking payment confirmed: ' . $bookingId);
-                } else {
-                    Log::warning('⚠ Booking not found: ' . $bookingId);
-                }
-            } else {
-                Log::warning('⚠ No booking_id in session metadata');
-            }
-        }
-
-        return response('Webhook received', 200);
+    try {
+        $event = \Stripe\Webhook::constructEvent($payload, $sigHeader, $endpointSecret);
+    } catch (\UnexpectedValueException $e) {
+        return response('Invalid payload', 400);
+    } catch (\Stripe\Exception\SignatureVerificationException $e) {
+        return response('Invalid signature', 400);
     }
+
+    if ($event->type === 'checkout.session.completed') {
+        $session = $event->data->object;
+        $bookingId = $session->metadata->booking_id ?? null;
+
+        if ($bookingId) {
+            $booking = Booking::find($bookingId);
+
+            if ($booking) {
+                $booking->update([
+                    'status' => 'Confirmed',
+                    'payment_status' => 'Paid',
+                    'stripe_session_id' => $session->id,
+                    'stripe_payment_intent' => $session->payment_intent,
+                ]);
+
+                Log::info('✅ Booking payment confirmed: ' . $bookingId);
+            } else {
+                Log::warning('⚠ Booking not found: ' . $bookingId);
+            }
+        } else {
+            Log::warning('⚠ No booking_id in session metadata');
+        }
+    }
+
+    return response('Webhook received', 200);
+}
+
 }
 
 
