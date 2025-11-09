@@ -12,6 +12,7 @@ class HomeController extends Controller
     //
     public function nearby(Request $request)
     {
+        //return response()->json(auth()->user());
         $request->validate([
             'lat' => 'nullable|numeric',
             'lng' => 'nullable|numeric',
@@ -20,9 +21,8 @@ class HomeController extends Controller
             'page' => 'nullable|integer',
         ]);
 
-        // Use provided coords or fallback to authenticated user's stored coords
-        $lat = $request->input('lat') ?? optional($request->user())->latitude;
-        $lng = $request->input('lng') ?? optional($request->user())->longitude;
+        $lat = $request->input('lat') ?? optional(auth()->user())->latitude;
+        $lng = $request->input('lng') ?? optional(auth()->user())->longitude;
 
         if (is_null($lat) || is_null($lng)) {
             return response()->json([
@@ -34,7 +34,6 @@ class HomeController extends Controller
         $perPage = 12;
 
         $query = Doctor::nearby((float) $lat, (float) $lng, (int) $radius)
-            ->where('doctors.is_active', true)
             ->with(['user', 'specialty']);
 
         if ($request->filled('specialty_id')) {

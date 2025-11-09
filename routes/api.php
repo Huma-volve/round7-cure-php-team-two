@@ -12,15 +12,10 @@ use App\Http\Controllers\Api\ChatController;
 use App\Http\Controllers\Api\MessageController;
 
 use App\Http\Controllers\Api\BookingController;
-<<<<<<< HEAD
-//use App\Http\Controllers\Api\DoctorController;
+use App\Http\Controllers\Api\StripeController;
 use App\Http\Controllers\Api\PatientController;
 use App\Http\Controllers\Api\HomeController;
 use App\Http\Controllers\Api\DoctorController;
-
-=======
-use App\Http\Controllers\Api\StripeController;
->>>>>>> main
 
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -36,8 +31,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('doctor/bookings', [BookingController::class, 'doctorBookings']);
     Route::get('patient/bookings', [BookingController::class, 'patientBookings']);
 
-    Route::apiResource('chat', ChatController::class)->only(['index','store','show']);
-    Route::apiResource('chat_message', MessageController::class)->only(['index','store']);
+    Route::apiResource('chat', ChatController::class)->only(['index', 'store', 'show']);
+    Route::apiResource('chat_message', MessageController::class)->only(['index', 'store']);
     ///chat
 });
 
@@ -52,17 +47,11 @@ Route::controller(AuthController::class)->group(function () {
 Route::prefix('auth')->controller(PasswordController::class)->group(function () {
     Route::post('forgot-password', 'sendResetCode');
 
-<<<<<<< HEAD
-    // Endpoint لإدخال الكود والباسورد الجديد
     Route::post('reset-password', 'resetPassword');
-=======
-
-    Route::post('reset-password',  'resetPassword');
 
 });
 Route::prefix('otp')->controller(otpController::class)->group(function () {
-    Route::post('verify',  'verifyOtp');
->>>>>>> main
+    Route::post('verify', 'verifyOtp');
 });
 
 

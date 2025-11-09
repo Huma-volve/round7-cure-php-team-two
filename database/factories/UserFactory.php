@@ -27,7 +27,7 @@ class UserFactory extends Factory
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'google_id' => null,
-            'password' => static::$password ??= Hash::make('password'),
+            'password' => static::$password ??= Hash::make('Password#123'),
             'phone_number' => $this->faker->unique()->numerify('01#########'),
             'profile_photo' => null,
             'latitude' => $this->faker->latitude(29.8, 30.2), // around Cairo
