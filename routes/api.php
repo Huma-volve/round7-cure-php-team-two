@@ -56,6 +56,7 @@ Route::prefix('otp')->controller(otpController::class)->group(function () {
 });
 
 Route::post('google/login', [GoogleController::class, 'LogInWithGoogle']);
+
 Route::prefix('users')->controller(UserController::class)->group(function () {
     Route::get('/', 'index');
     Route::get('/{user}', 'show');
