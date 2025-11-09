@@ -23,7 +23,7 @@ Route::controller(AuthController::class)->group(function () {
 });
 
 Route::prefix('auth')->controller(PasswordController::class)->group(function () {
-    Route::post('forgot-password',  'sendResetCode');
+    Route::post('forgot-password', 'sendResetCode');
     Route::post('reset-password', 'resetPassword');
 });
 Route::prefix('otp')->controller(otpController::class)->group(function () {
@@ -50,8 +50,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('doctor/bookings', [BookingController::class, 'doctorBookings']);
     Route::get('patient/bookings', [BookingController::class, 'patientBookings']);
     //chat system
-    Route::apiResource('chat', ChatController::class)->only(['index','store','show']);
-    Route::apiResource('chat_message', MessageController::class)->only(['index','store']);
+    Route::apiResource('chat', ChatController::class)->only(['index', 'store', 'show']);
+    Route::apiResource('chat_message', MessageController::class)->only(['index', 'store']);
     //reviews
     Route::post('reviews', [ReviewController::class, 'store']);
     //session feedback
@@ -64,8 +64,6 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 Route::post('/stripe/webhook', [StripeController::class, 'handleWebhook']);
-
-
 
 
 
