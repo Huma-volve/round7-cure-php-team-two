@@ -20,7 +20,9 @@ class FirebaseService
 
      public function sendPushNotification(string $title, string $body, string $token, array $data = [])
     {
-        if (!$token) return;
+       if (empty($token)) {
+        return;
+         }
 
         $message = CloudMessage::withTarget('token', $token)
             ->withNotification(['title' => $title, 'body' => $body])
