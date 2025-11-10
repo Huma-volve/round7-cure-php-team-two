@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
@@ -19,8 +20,15 @@ class SearchController extends Controller
 
         $this->saveSearchHistory($userId, $query, $location);
 
-        $results = $this->searchDoctors($query);
-
+        $results = Doctor::with(['user', 'specialty'])
+            ->whereHas('user', function ($q) use ($query) {
+                $q->where('name', 'like', "%{$query}%");
+            })
+            ->orWhereHas('specialty', function ($q) use ($query) {
+                $q->where('name', 'like', "%{$query}%");
+            })
+            ->get();
+            
         $locationData = $location ? $this->fetchLocationData($location) : null;
 
         return response()->json([
@@ -30,6 +38,7 @@ class SearchController extends Controller
             'results' => SearchResultResource::collection($results),
         ]);
     }
+
     protected function saveSearchHistory($userId, $query, $location = null)
     {
         SearchHistory::create([
@@ -37,12 +46,6 @@ class SearchController extends Controller
             'search_query' => $query,
             'location' => $location,
         ]);
-    }
-    protected function searchDoctors($query)
-    {
-        return Doctor::where('name', 'like', "%{$query}%")
-            ->orWhere('specialty', 'like', "%{$query}%")
-            ->get();
     }
 
     protected function fetchLocationData($location)
@@ -82,4 +85,3 @@ class SearchController extends Controller
         return response()->json(['message' => 'Search history cleared']);
     }
 }
-?>
