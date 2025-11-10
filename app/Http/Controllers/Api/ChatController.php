@@ -17,18 +17,18 @@ class ChatController extends Controller
     /**
      * Display a listing of the resource.
      */
-   // عرض كل الشات للمستخدم
-  public function index(GetChatRequest $request): JsonResponse
-{
-    // بنجيب الشاتات اللي المستخدم الحالي طرف فيها فقط
-    $chats = Chat::hasParticipant(auth()->id())
-        ->whereHas('messages')
-        ->with('lastMessage.user', 'participants.user')
-        ->latest('updated_at')
-        ->get();
+    // عرض كل الشات للمستخدم
+    public function index(GetChatRequest $request): JsonResponse
+    {
+        // بنجيب الشاتات اللي المستخدم الحالي طرف فيها فقط
+        $chats = Chat::hasParticipant(auth()->id())
+            ->whereHas('messages')
+            ->with('lastMessage.user', 'participants.user')
+            ->latest('updated_at')
+            ->get();
 
-    return $this->success($chats);
-}
+        return $this->success($chats);
+    }
 
 
     /**
@@ -39,7 +39,7 @@ class ChatController extends Controller
         //
     }
 
-     public function store(StoreChatRequest $request) : JsonResponse
+    public function store(StoreChatRequest $request) : JsonResponse
     {
         $data = $this->prepareStoreData($request);
         if($data['userId'] === $data['otherUserId']){
@@ -67,19 +67,19 @@ class ChatController extends Controller
         return $this->success($previousChat->load('lastMessage.user','participants.user'));
     }
 
-    
-     private function getPreviousChat(int $otherUserId): ?Chat
-{
-    $userId = auth()->id();
 
-    return Chat::whereHas('participants', function ($query) use ($userId) {
+    private function getPreviousChat(int $otherUserId): ?Chat
+    {
+        $userId = auth()->id();
+
+        return Chat::whereHas('participants', function ($query) use ($userId) {
             $query->where('user_id', $userId);
         })
-        ->whereHas('participants', function ($query) use ($otherUserId) {
-            $query->where('user_id', $otherUserId);
-        })
-        ->first();
-}
+            ->whereHas('participants', function ($query) use ($otherUserId) {
+                $query->where('user_id', $otherUserId);
+            })
+            ->first();
+    }
 
 
 
@@ -110,7 +110,7 @@ class ChatController extends Controller
     /**
      * Display the specified resource.
      */
-      public function show(Chat $chat): JsonResponse
+    public function show(Chat $chat): JsonResponse
     {
         $chat->load('lastMessage.user', 'participants.user');
         return $this->success($chat);
