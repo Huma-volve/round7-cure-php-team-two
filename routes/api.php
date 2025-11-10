@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\HomeController;
 use App\Http\Controllers\Api\DoctorController;
+use App\Http\Controllers\Api\FavoriteController;
 use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\SearchController;
 use App\Http\Controllers\Api\SessionFeedbackController;
@@ -80,4 +81,9 @@ Route::prefix('users')->controller(UserController::class)->group(function () {
     Route::get('/{user}', 'show');
     Route::patch('/update', 'update');
     Route::delete('/delete', 'destroy');
+});
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/favorites', [FavoriteController::class, 'index']);
+    Route::post('/favorites', [FavoriteController::class, 'add']);
+    Route::delete('/favorites/{id}', [FavoriteController::class, 'remove']);
 });
