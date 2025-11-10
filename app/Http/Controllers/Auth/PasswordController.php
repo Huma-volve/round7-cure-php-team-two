@@ -3,35 +3,27 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\otpController;
-use App\Http\Controllers\SMSController;
-use App\Http\Controllers\UserController;
-use App\Mail\SendResetPasswordEmail;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rules\Password;
 
 class PasswordController extends Controller
 {
-public function sendResetCode(Request $request){
-    $otp=otpController::sendOTPCode($request);
-    //SMSController::sendSMS($request->email,"Your password reset code is: $otp");
-}
-public function resetPassword(Request $request)
-{
+    /**
+     * Update the user's password.
+     */
+    public function update(Request $request): RedirectResponse
+    {
+        $validated = $request->validateWithBag('updatePassword', [
+            'current_password' => ['required', 'current_password'],
+            'password' => ['required', Password::defaults(), 'confirmed'],
+        ]);
 
+        $request->user()->update([
+            'password' => Hash::make($validated['password']),
+        ]);
 
-
-$request->validate(['password' => ['required', 'confirmed', Password::min(8)->mixedCase()->numbers()]]);
-$user=UserController::FindByEmail($request->email);
-$user->password=Hash::make($request->password);
-$user->otp_code=null;
-$user->save();
-return response(['message'=>'Password reset successfully.']);
-
-
-
-}
-
+        return back()->with('status', 'password-updated');
+    }
 }
