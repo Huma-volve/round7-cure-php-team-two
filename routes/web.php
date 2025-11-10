@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Dashboard\QuestionController;
 
 Route::get('/', function () {
     return view('dashboard.analytics');
@@ -23,4 +24,10 @@ Route::get('/specialties', fn() => 'Payment successful!')->name('specialties.ind
 Route::get('/bookings', fn() => 'Payment successful!')->name('bookings.index');
 Route::get('/success', fn() => 'Payment successful!')->name('stripe.success');
 Route::get('/cancel', fn() => 'Payment canceled.')->name('stripe.cancel');
+
+
+//  Route::group(['middleware' => 'auth:admins'], function () {
+    Route::resource('questions', QuestionController::class);
+
+//  });
 
