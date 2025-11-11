@@ -17,3 +17,9 @@
 
 {{-- Optional: Github button --}}
 <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  <script src="../assets/js/form-basic-inputs.js"></script>
+
+
+<!-- JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>

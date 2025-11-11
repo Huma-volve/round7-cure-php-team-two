@@ -41,6 +41,7 @@
         <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto">
             <i class="menu-toggle-icon d-xl-inline-block align-middle"></i>
         </a>
+
     </div>
 
     <div class="menu-inner-shadow"></div>
@@ -49,5 +50,19 @@
         @foreach (config('menu') as $item)
             @include('dashboard.partials.menu-item', ['item' => $item])
         @endforeach
+
+        <li class="menu-item ">
+            <a href="{{ route('questions.index') }}" class="menu-link">
+                <i class="menu-icon icon-base ri ri-question-line"></i>
+                <div>Questions</div>
+            </a>
+        </li>
+        <li class="menu-item ">
+            <a href="{{ route('settings.index') }}" class="menu-link">
+                <i class="menu-icon icon-base ri ri-settings-3-line"></i>
+                <div>Settings</div>
+            </a>
+        </li>
+
     </ul>
 </aside>
