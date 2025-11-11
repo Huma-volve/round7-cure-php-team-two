@@ -2,12 +2,15 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Dashboard\QuestionController;
+use App\Http\Controllers\Dashboard\SettingController;
 use  App\Http\Controllers\Dashboard\DoctorController;
 
 Route::get('/', function () {
 
     return redirect()->route('login');
 })->name('dashboard');
+
 Route::get('/register', function () {
     return view('dashboard.auth.login');
 })->name('register');
@@ -25,6 +28,11 @@ Route::get('/specialties', fn() => 'Payment successful!')->name('specialties.ind
 Route::get('/bookings', fn() => 'Payment successful!')->name('bookings.index');
 Route::get('/success', fn() => 'Payment successful!')->name('stripe.success');
 Route::get('/cancel', fn() => 'Payment canceled.')->name('stripe.cancel');
+
+
+
+    Route::resource('questions', QuestionController::class);
+    Route::resource('settings', SettingController::class);
 
 
 

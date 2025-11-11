@@ -10,6 +10,8 @@
     <link rel="icon" type="image/x-icon" href="{{ asset('assets/img/favicon/favicon.ico') }}" />
     @include('dashboard.partials.styles')
     @stack('head')
+      <!-- CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 
 
 </head>
@@ -45,6 +47,7 @@
     </div>
     @include('dashboard.partials.scripts')
     @stack('scripts')
+    @include('dashboard.partials.toaster')
 </body>
 
 </html>
