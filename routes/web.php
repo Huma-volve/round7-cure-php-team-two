@@ -1,12 +1,14 @@
 <?php
 
-use Illuminate\Support\Facades\Config;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Dashboard\QuestionController;
 use App\Http\Controllers\Dashboard\SettingController;
+use  App\Http\Controllers\Dashboard\DoctorController;
 
 Route::get('/', function () {
-    return view('dashboard.analytics');
+
+    return redirect()->route('login');
 })->name('dashboard');
 
 Route::get('/register', function () {
@@ -34,3 +36,29 @@ Route::get('/cancel', fn() => 'Payment canceled.')->name('stripe.cancel');
 
 
 
+Route::middleware('auth')->prefix('/dashboard')->group(
+   function()
+   {
+      Route::get('doctor',function()
+      {
+          $doctor=new DoctorController();
+          return $doctor->show();
+
+      })->middleware('role:doctor');
+
+      Route::get('admin',function()
+      {
+//          return view('dashboard');
+             return "this is admin";
+
+
+      })->middleware('role:admin');
+   }
+);
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+require __DIR__.'/auth.php';
