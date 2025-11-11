@@ -15,6 +15,11 @@ class BookingController extends Controller
         $this->middleware('permission:cancel booking', ['only' => ['destroy']]);
     }
 
+    public function index(){
+        $bookings=Booking::with('patient.user','doctor.user')->get();
+        return view('dashboard.bookings.index',compact('bookings'));
+    }
+
     public function store(Request $request)
     {
         $request->validate([
@@ -52,7 +57,10 @@ class BookingController extends Controller
         $booking = Booking::findOrFail($id);
         $user = Auth::user();
 
-        if (!$user->patient || $booking->patient_id !== $user->patient->id) {
+        if (
+            (!$user->admin) ||
+            (!$user->patient || $booking->patient_id !== $user->patient->id)
+         ) {
             return response()->json(['message' => 'Unauthorized to update this booking'], 403);
         }
 
@@ -62,12 +70,13 @@ class BookingController extends Controller
         ]);
 
         $booking->update([
+            'status' => 'rescheduled',
             'booking_date' => $request->booking_date,
             'booking_time' => $request->booking_time,
         ]);
 
         return response()->json([
-            'message' => 'Booking updated successfully',
+            'message' => 'Booking Rescheduled successfully',
             'data' => $booking,
         ], 200);
     }
@@ -80,6 +89,7 @@ class BookingController extends Controller
         $user=Auth::user();
 
         if (
+            ($user->admin) ||
             ($user->patient && $booking->patient_id === $user->patient->id) ||
             ($user->doctor && $booking->doctor_id === $user->doctor->id)
         ) {

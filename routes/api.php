@@ -47,7 +47,6 @@ Route::middleware('auth:sanctum')->group(function () {
     //payment routes
     Route::post('/bookings/checkout/{bookingId}', [StripeController::class, 'checkout']);
     //doctor & patient bookings
-    Route::get('doctor/bookings', [BookingController::class, 'doctorBookings']);
     Route::get('patient/bookings', [BookingController::class, 'patientBookings']);
     //chat system
     Route::apiResource('chat', ChatController::class)->only(['index', 'store', 'show']);
