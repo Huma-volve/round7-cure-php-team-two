@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Files\FileController;
+
 
 class SettingController extends Controller
 {
@@ -13,7 +15,8 @@ class SettingController extends Controller
      */
     public function index()
     {
-        //
+        $settings = Setting::first();
+        return view('Dashboard.settings.index', compact('settings'));
     }
     
     /**
@@ -53,7 +56,20 @@ class SettingController extends Controller
      */
     public function update(Request $request, Setting $setting)
     {
-        //
+         $request->validate([
+            'phone' => 'required|numeric',
+            'email' => 'required|email|max:255',
+            'logo'=>'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+           
+        ]);
+       $setting->logo = FileController::updateFile($request->file('logo'), $setting->logo,'uploads/settings');
+        $setting->save();
+        $setting->update([
+            'phone' => $request->phone,
+            'email' => $request->email,
+        ]);
+
+        return redirect()->route('settings.index')->with('success', 'Settings updated successfully.');
     }
 
     /**

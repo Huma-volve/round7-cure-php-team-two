@@ -30,6 +30,7 @@ class QuestionController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request->all());
         $request->validate([
             'question' => 'required|string|max:255',
             'answer'   => 'required|string|max:255',
@@ -43,7 +44,7 @@ class QuestionController extends Controller
         ]);
         
 
-        return redirect()->route('questions.index')->with('success', 'تم حفظ البيانات بنجاح');
+        return redirect()->route('questions.index')->with('success', 'Data created successfully');
     }
 
     /**
@@ -80,10 +81,10 @@ class QuestionController extends Controller
             'is_active' => $request->is_active,
         ]);
         if(!$question){
-            return redirect()->route('questions.index')->with('error', 'حدث خطأ ما الرجاء المحاولة مرة أخرى');
+            return redirect()->route('questions.index')->with('error', 'Something went wrong, please try again.');
         }
 
-        return redirect()->route('questions.index')->with('success', 'تم تحديث البيانات بنجاح');
+        return redirect()->route('questions.index')->with('success', 'Data updated successfully');
     }
 
     /**
@@ -92,9 +93,6 @@ class QuestionController extends Controller
     public function destroy(Question $question)
     {
         $question->delete();
-        if(!$question){
-            return redirect()->route('questions.index')->with('error', 'حدث خطأ ما الرجاء المحاولة مرة أخرى');
-        }
-        return redirect()->route('questions.index')->with('success', 'تم حذف البيانات بنجاح');
+        return redirect()->route('questions.index')->with('success', 'Data deleted successfully');
     }
 }

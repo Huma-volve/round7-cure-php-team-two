@@ -3,10 +3,12 @@
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Dashboard\QuestionController;
+use App\Http\Controllers\Dashboard\SettingController;
 
 Route::get('/', function () {
     return view('dashboard.analytics');
 })->name('dashboard');
+
 Route::get('/register', function () {
     return view('dashboard.auth.login');
 })->name('register');
@@ -26,8 +28,9 @@ Route::get('/success', fn() => 'Payment successful!')->name('stripe.success');
 Route::get('/cancel', fn() => 'Payment canceled.')->name('stripe.cancel');
 
 
-//  Route::group(['middleware' => 'auth:admins'], function () {
-    Route::resource('questions', QuestionController::class);
 
-//  });
+    Route::resource('questions', QuestionController::class);
+    Route::resource('settings', SettingController::class);
+
+
 
