@@ -20,8 +20,8 @@ return [
     */
 
     [
-        'route' => 'dashboard',
-        'label' => 'Dashboards',
+        'route' => 'doctor.dashboard.index',
+        'label' => 'doctor Dashboard',
         'icon' => 'ri ri-home-smile-line',
     ],
     [
