@@ -1,26 +1,25 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Dashboard\QuestionController;
 use App\Http\Controllers\Dashboard\SettingController;
 use  App\Http\Controllers\Dashboard\DoctorController;
 
-Route::get('/', function () {
+    Route::get('/',function(){
+        return redirect()->route('login');
+    })->middleware('guest');
 
-    return redirect()->route('login');
-})->name('dashboard');
 
-Route::get('/register', function () {
-    return view('dashboard.auth.login');
-})->name('register');
+   Route::middleware(['auth','role-check'])->get('/',function(){
+       return "hello patient";
+   })->name('dashboard');
 
-Route::get('/login', function () {
-    return view('dashboard.auth.login');
-})->name('login');
-Route::get('/forgot-password', function () {
-    return view('dashboard.auth.forgot-password');
-})->name('password.request');
+
+
+
+
 
 Route::get('/doctors', fn() => 'Payment successful!')->name('doctors.index');
 Route::get('/doctors/create', fn() => 'Payment successful!')->name('doctors.create');
@@ -39,22 +38,18 @@ Route::get('/cancel', fn() => 'Payment canceled.')->name('stripe.cancel');
 Route::middleware('auth')->prefix('/dashboard')->group(
    function()
    {
-      Route::get('doctor',function()
-      {
-          $doctor=new DoctorController();
-          return $doctor->show();
-
-      })->middleware('role:doctor');
+      Route::get('doctor',[DoctorController::class,'available_time'])->middleware('role:doctor')->name('doctor-dashboard');
 
       Route::get('admin',function()
       {
-//          return view('dashboard');
+
              return "this is admin";
 
 
       })->middleware('role:admin');
    }
 );
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

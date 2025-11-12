@@ -1,3 +1,9 @@
+<script >
+    if (localStorage.getItem('has_account') === 'true') {
+
+        window.location.href = "{{ route('login') }}";
+    }
+</script>
 <x-guest-layout>
     <form method="POST" action="{{ route('register') }}">
         @csrf
@@ -50,3 +56,4 @@
         </div>
     </form>
 </x-guest-layout>
+
