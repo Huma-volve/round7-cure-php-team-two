@@ -1,13 +1,59 @@
 <?php
 
-use Illuminate\Support\Facades\Config;
+use App\Http\Controllers\ProfileController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Dashboard\QuestionController;
+use App\Http\Controllers\Dashboard\SettingController;
+use  App\Http\Controllers\Dashboard\DoctorController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+    Route::get('/',function(){
+        return redirect()->route('login');
+    })->middleware('guest');
 
 
+   Route::middleware(['auth','role-check'])->get('/',function(){
+       return "hello patient";
+   })->name('dashboard');
+
+
+
+
+
+
+Route::get('/doctors', fn() => 'Payment successful!')->name('doctors.index');
+Route::get('/doctors/create', fn() => 'Payment successful!')->name('doctors.create');
+Route::get('/specialties', fn() => 'Payment successful!')->name('specialties.index');
+Route::get('/bookings', fn() => 'Payment successful!')->name('bookings.index');
 Route::get('/success', fn() => 'Payment successful!')->name('stripe.success');
 Route::get('/cancel', fn() => 'Payment canceled.')->name('stripe.cancel');
 
+
+
+    Route::resource('questions', QuestionController::class);
+    Route::resource('settings', SettingController::class);
+
+
+
+Route::middleware('auth')->prefix('/dashboard')->group(
+   function()
+   {
+      Route::get('doctor',[DoctorController::class,'available_time'])->middleware('role:doctor')->name('doctor-dashboard');
+
+      Route::get('admin',function()
+      {
+
+             return "this is admin";
+
+
+      })->middleware('role:admin');
+   }
+);
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+require __DIR__.'/auth.php';

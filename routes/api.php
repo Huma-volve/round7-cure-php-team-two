@@ -1,4 +1,5 @@
 <?php
+
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\Auth\PasswordController;
@@ -16,6 +17,37 @@ use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\SearchController;
 use App\Http\Controllers\Api\SessionFeedbackController;
 use App\Http\Controllers\Api\StripeController;
+
+// Auth routes
+Route::controller(AuthController::class)->group(function () {
+    Route::post('/register', 'register');
+    Route::post('/login', 'login');
+    Route::post('/logout', 'logout')->middleware('auth:sanctum');
+});
+
+// Password reset routes
+Route::prefix('auth')->controller(PasswordController::class)->group(function () {
+    Route::post('forgot-password', 'sendResetCode');
+    Route::post('reset-password', 'resetPassword');
+});
+
+// 🔢 OTP routes
+Route::prefix('otp')->controller(OtpController::class)->group(function () {
+    Route::post('verify', 'verifyOtp');
+});
+
+// 🔄 Google login
+Route::post('google/login', [GoogleController::class, 'LogInWithGoogle']);
+
+// 👤 User routes
+Route::prefix('users')->controller(UserController::class)->group(function () {
+    Route::get('/', 'index');
+    Route::get('/{user}', 'show');
+    Route::patch('/update', 'update');
+    Route::delete('/delete', 'destroy');
+});
+
+// 🧾 Authenticated routes
 Route::middleware('auth:sanctum')->group(function () {
     // Booking routes
     Route::post('bookings', [BookingController::class, 'store']);
@@ -40,50 +72,22 @@ Route::middleware('auth:sanctum')->group(function () {
     // Session feedback
     Route::post('session-feedback', [SessionFeedbackController::class, 'store']);
 
-    // Home & Doctors routes
+    // Home & Doctors
     Route::get('/home/doctors', [HomeController::class, 'nearby']);
     Route::get('/doctors/{doctor}', [DoctorController::class, 'show']);
     Route::get('/doctors/{doctor}/reviews', [DoctorController::class, 'reviews']);
     Route::post('/doctors/{doctor}/favorite', [DoctorController::class, 'toggleFavorite']);
 
-    // Search routes
+    // Search
     Route::get('/search', [SearchController::class, 'search']);
     Route::get('/search/history', [SearchController::class, 'history']);
     Route::delete('/search/history', [SearchController::class, 'clearHistory']);
-});
 
-Route::post('/stripe/webhook', [StripeController::class, 'handleWebhook']);
-
-// Auth routes
-Route::controller(AuthController::class)->group(function () {
-    Route::post('/register', 'register');
-    Route::post('/login', 'login');
-    Route::post('/logout', 'logout')->middleware('auth:sanctum');
-});
-
-// Password routes
-Route::prefix('auth')->controller(PasswordController::class)->group(function () {
-    Route::post('forgot-password',  'sendResetCode');
-    Route::post('reset-password', 'resetPassword');
-});
-
-// OTP routes
-Route::prefix('otp')->controller(OtpController::class)->group(function () {
-    Route::post('verify', 'verifyOtp');
-});
-
-// Google login
-Route::post('google/login', [GoogleController::class, 'LogInWithGoogle']);
-
-// User routes
-Route::prefix('users')->controller(UserController::class)->group(function () {
-    Route::get('/', 'index');
-    Route::get('/{user}', 'show');
-    Route::patch('/update', 'update');
-    Route::delete('/delete', 'destroy');
-});
-Route::middleware('auth:sanctum')->group(function () {
+    // Favorites
     Route::get('/favorites', [FavoriteController::class, 'index']);
     Route::post('/favorites', [FavoriteController::class, 'add']);
     Route::delete('/favorites/{id}', [FavoriteController::class, 'remove']);
 });
+
+// Stripe webhook
+Route::post('/stripe/webhook', [StripeController::class, 'handleWebhook']);
