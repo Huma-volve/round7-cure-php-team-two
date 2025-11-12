@@ -20,6 +20,9 @@ class Doctor extends Model
         'session_price',
         'available_slots',
     ];
+    protected $casts=[
+        'available_slots'=>'array'
+    ];
     protected $appends = ['average_rating', 'reviews_count'];
 
     public function getAverageRatingAttribute()

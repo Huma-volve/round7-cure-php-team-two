@@ -62,6 +62,7 @@ return [
         'badge' => ['text' => '3', 'class' => 'badge bg-label-danger rounded-pill ms-2']
     ],
 
+
     /*
     [
         'route' => 'reviews.index',
