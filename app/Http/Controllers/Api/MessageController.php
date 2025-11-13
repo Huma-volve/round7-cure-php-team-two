@@ -1,89 +1,217 @@
 <?php
 
 namespace App\Http\Controllers\Api;
-
 use App\Http\Controllers\Controller;
-use App\Http\Requests\GetMessageRequest;
-use App\Http\Requests\StoreMessageRequest;
-use Illuminate\Http\JsonResponse;
-use App\Models\Message;
-use App\Models\Chat;
-use App\Models\User;
-use App\Events\NewMessageSent;
 
+use Illuminate\Http\Request;
+use App\Models\Recipient;
+use App\Models\Conversation;
+use App\Models\User;
+use App\Events\MessageCreated;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
+use Carbon\Carbon;
+use Throwable;
 
 
 class MessageController extends Controller
 {
-
-   public function index(GetMessageRequest $request): JsonResponse
+    public function index($id)
     {
-        $data = $request->validated();
-        $chatId = $data['chat_id'];
-        $currentPage = $data['page'];
-        $pageSize = $data['page_size'] ?? 15;
+        $user = Auth::user();
+        $conversation = $user->conversations()
+            ->with(['participants' => function($builder) use ($user) {
+            $builder->where('id', '<>', $user->id);
+        }])
+        ->findOrFail($id);
 
-        $messages = Message::where('chat_id', $chatId)
+        $messages = $conversation->messages()
             ->with('user')
-            ->latest('created_at')
-            ->simplePaginate(
-                $pageSize,
-                ['*'],
-                'page',
-                $currentPage
-            );
+            ->where(function($query) use ($user) {
+                $query
+                    ->where(function($query) use ($user) {
+                        $query->where('user_id', $user->id)
+                            ->whereNull('deleted_at');
+                    })
+                    ->orWhereRaw('id IN (
+                        SELECT message_id FROM recipients
+                        WHERE recipients.message_id = messages.id
+                        AND recipients.user_id = ?
+                        AND recipients.deleted_at IS NULL
+                    )', [$user->id]);
+            })
+            ->latest()
+            ->paginate();
 
-        return $this->success($messages->getCollection());
+        return [
+            'conversation' => $conversation,
+            'messages' => $messages,
+        ];
     }
 
     /**
-     * Create a chat message
+     * Store a newly created resource in storage.
      *
-     * @param StoreMessageRequest $request
-     * @return JsonResponse
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
      */
-    public function store(StoreMessageRequest $request) : JsonResponse
+    public function store(Request $request)
     {
-        $data = $request->validated();
-        $data['user_id'] = auth()->user()->id;
+        $request->validate([
+            // 'message' => [Rule::requiredIf(function() use ($request) {
+            //     return !$request->hasFile('attachment');
+            // }), 'string'],
+            // 'attachment' => ['file'],
+            'conversation_id' => [
+                Rule::requiredIf(function() use ($request) {
+                    return !$request->input('user_id');
+                }),
+                'int', 
+                'exists:conversations,id',
+            ],
+            'user_id' => [
+                Rule::requiredIf(function() use ($request) {
+                    return !$request->input('conversation_id');
+                }),
+                'int', 
+                'exists:users,id',
+            ],
+        ]);
 
-        $chatMessage = Message::create($data);
-        $chatMessage->load('user');
+        $user = Auth::user();
 
-        /// TODO send broadcast event to pusher and send notification to onesignal services
-        $this->sendNotificationToOther($chatMessage);
+        $conversation_id = $request->post('conversation_id');
+        $user_id = $request->post('user_id');
 
-        return $this->success($chatMessage,'Message has been sent successfully.');
-    }
+        DB::beginTransaction();
+        try {
+            if ($conversation_id) {
+                $conversation = $user->conversations()->findOrFail($conversation_id);
+            } else {
 
+                $conversation = Conversation::where('type', '=', 'peer')
+                    ->whereHas('participants', function ($builder) use ($user_id, $user) {
+                    $builder->join('participants as participants2', 'participants2.conversation_id', '=', 'participants.conversation_id')
+                            ->where('participants.user_id', '=', $user_id)
+                            ->where('participants2.user_id', '=', $user->id);
+                })->first();
 
-    private function sendNotificationToOther(Message $chatMessage) : void {
+                if (!$conversation) {
+                    $conversation = Conversation::create([
+                        'user_id' => $user->id,
+                        'type' => 'peer',
+                    ]);
 
-        // TODO move this event broadcast to observer
-        broadcast(new NewMessageSent($chatMessage))->toOthers();
+                    $conversation->participants()->attach([
+                        $user->id => ['joined_at' => now()], 
+                        $user_id => ['joined_at' => now()],
+                    ]);
+                }
 
-        $user = auth()->user();
-        $userId = $user->id;
+            }
 
-        $chat = Chat::where('id',$chatMessage->chat_id)
-            ->with(['participants'=>function($query) use ($userId){
-                $query->where('user_id','!=',$userId);
-            }])
-            ->first();
-        if(count($chat->participants) > 0){
-            $otherUserId = $chat->participants[0]->user_id;
+            $type = 'text';
+            $message = $request->post('message');
+            if ($request->hasFile('attachment')) {
+                $file = $request->file('attachment');
+                $message = [
+                    'file_name' => $file->getClientOriginalName(),
+                    'file_size' => $file->getSize(),
+                    'mimetype' => $file->getMimeType(),
+                    'file_path' => $file->store('attachments', [
+                        'disk' => 'public'
+                    ]),
+                ];
+                $type = 'attachment';
+            }
 
-            $otherUser = User::where('id',$otherUserId)->first();
-            $otherUser->sendNewMessageNotification([
-                'messageData'=>[
-                    'senderName'=>$user->username,
-                    'message'=>$chatMessage->message,
-                    'chatId'=>$chatMessage->chat_id
-                ]
+            $message = $conversation->messages()->create([
+                'user_id' => $user->id,
+                'type' => $type,
+                'body' => $message,
+            ]);
+            
+            DB::statement('
+                INSERT INTO recipients (user_id, message_id)
+                SELECT user_id, ? FROM participants
+                WHERE conversation_id = ?
+                AND user_id <> ?
+            ', [$message->id, $conversation->id, $user->id]);
+
+            $conversation->update([
+                'last_message_id' => $message->id,
             ]);
 
+            DB::commit();
+
+            $message->load('user');
+
+            broadcast(new MessageCreated($message));
+
+        } catch (Throwable $e) {
+            DB::rollBack();
+
+            throw $e;
         }
 
+        return $message;
     }
 
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Request $request, $id)
+    {
+        $user = Auth::user();
+        
+        $user->sentMessages()
+            ->where('id', '=', $id)
+            ->update([
+                'deleted_at' => Carbon::now(),
+            ]);
+
+        if ($request->target == 'me') {
+
+            Recipient::where([
+                'user_id' => $user->id,
+                'message_id' => $id,
+            ])->delete();
+
+        } else {
+            Recipient::where([
+                'message_id' => $id,
+            ])->delete();
+        }
+
+        return [
+            'message' => 'deleted',
+        ];
+    }
 }

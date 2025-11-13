@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('chat_participants', function (Blueprint $table) {
+        Schema::create('conversations', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('chat_id')->constrained('chats');
-            $table->foreignId('user_id')->constrained('users');
-               $table->unique([
-                'chat_id',
-                'user_id'
-            ]);
+            $table->foreignId('user_id')
+                ->nullable()
+                ->constrained('users')
+                ->nullOnDelete();
+            $table->string('label')->nullable();
+            $table->enum('type', ['peer', 'group'])->default('peer');
             $table->timestamps();
         });
     }
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('chat_participants');
+        Schema::dropIfExists('conversations');
     }
 };

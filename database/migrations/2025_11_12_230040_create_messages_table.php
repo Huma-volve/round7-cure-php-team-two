@@ -13,10 +13,16 @@ return new class extends Migration
     {
         Schema::create('messages', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('chat_id')->constrained('chats');
-            $table->foreignId('user_id')->constrained('users');
-            $table->text('message');
-            $table->boolean('is_read')->default(false);
+            $table->foreignId('conversation_id')
+                ->constrained('conversations')
+                ->cascadeOnDelete();
+            $table->foreignId('user_id')
+                ->nullable()
+                ->constrained('users')
+                ->nullOnDelete();
+            $table->text('body');
+            $table->enum('type', ['text', 'attachment'])
+                ->default('text');
             $table->timestamps();
             $table->softDeletes();
         });
