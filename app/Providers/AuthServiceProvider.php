@@ -25,7 +25,7 @@ class AuthServiceProvider extends ServiceProvider
     {
         //
         //$this->registerPolicies();
-/*
+
         Gate::define('isDoctor', function ($user) {
             // لو بتستخدم Spatie roles
             if (method_exists($user, 'hasRole')) {
@@ -36,6 +36,7 @@ class AuthServiceProvider extends ServiceProvider
             //return (bool) $user->doctor;
             return true;
         });
+        /*
         Gate::define('view-patient', function ($user, Patient $patient) {
             // يتحقق إن المستخدم طبيب وله حجز مع المريض ده
             if ($user->doctor) {
