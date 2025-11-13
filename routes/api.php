@@ -7,8 +7,6 @@ use App\Http\Controllers\Api\OtpController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\ChatController;
-use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\HomeController;
 use App\Http\Controllers\Api\DoctorController;
@@ -17,6 +15,9 @@ use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\SearchController;
 use App\Http\Controllers\Api\SessionFeedbackController;
 use App\Http\Controllers\Api\StripeController;
+use App\Http\Controllers\Api\ConversationController;
+use App\Http\Controllers\Api\MessageController;
+
 
 // Auth routes
 Route::controller(AuthController::class)->group(function () {
@@ -62,9 +63,15 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('doctor/bookings', [BookingController::class, 'doctorBookings']);
     Route::get('patient/bookings', [BookingController::class, 'patientBookings']);
 
-    // Chat system
-    Route::apiResource('chat', ChatController::class)->only(['index','store','show']);
-    Route::apiResource('chat_message', MessageController::class)->only(['index','store']);
+      Route::get('conversations', [ConversationController::class, 'index']);
+    Route::get('conversations/{conversation}', [ConversationController::class, 'show']);
+    // Route::post('conversations/{conversation}/participants', [ConversationController::class, 'addParticipant']);
+    // Route::delete('conversations/{conversation}/participants', [ConversationController::class, 'removeParticipant']);
+    Route::put('conversations/{conversation}/read', [ConversationController::class, 'markAsRead']);
+    Route::get('conversations/{id}/messages', [MessageController::class, 'index']);
+    Route::post('messages', [MessageController::class, 'store'])
+        ->name('api.messages.store');
+    Route::delete('messages/{id}', [MessageController::class, 'destroy']);
 
     // Reviews
     Route::post('reviews', [ReviewController::class, 'store']);

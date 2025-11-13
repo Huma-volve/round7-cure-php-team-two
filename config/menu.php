@@ -51,6 +51,7 @@ return [
                 'icon' => 'ri ri-user-3-line',
 
             ],
+
         ],
     ],
 
@@ -60,6 +61,20 @@ return [
         'icon' => 'ri ri-calendar-2-line',
         'permission' => 'view-bookings',
         'badge' => ['text' => '3', 'class' => 'badge bg-label-danger rounded-pill ms-2']
+    ],
+    [
+        'route' => 'questions.index',
+        'label' => 'Questions',
+        'icon' => 'ri ri-question-line',
+        'permission' => 'view-bookings',
+        // 'badge' => ['text' => '3', 'class' => 'badge bg-label-danger rounded-pill ms-2']
+    ],
+    [
+        'route' => 'settings.index',
+        'label' => 'Settings',
+        'icon' => 'ri ri-settings-4-line',
+        'permission' => 'view-bookings',
+        // 'badge' => ['text' => '3', 'class' => 'badge bg-label-danger rounded-pill ms-2']
     ],
 
 
