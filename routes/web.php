@@ -22,8 +22,9 @@ Route::get('/specialties', fn() => 'Payment successful!')->name('specialties.ind
 //all bookings
 Route::get('/bookings', [BookingController::class, 'index'])->name('bookings.index');
 
-Route::put('bookings/{booking}/update', [BookingController::class, 'update'])->name('dashboard.bookings.edit');
-Route::delete('bookings/{booking}/cancel', [BookingController::class, 'destroy'])->name('dashboard.bookings.delete');
+Route::get('/bookings/{booking}/show', [BookingController::class, 'show'])->name('bookings.show');
+
+Route::delete('bookings/{booking}/cancel', [BookingController::class, 'destroy'])->name('bookings.delete');
 //doctor bookings
 Route::get('doctor/bookings', [BookingController::class, 'doctorBookings']);
 //cancel booking

@@ -42,9 +42,6 @@
                         <th>Time</th>
                         <th>Status</th>
                         <th>Payment Amount</th>
-                        <th>Payment Method</th>
-                        <th>Payment Status</th>
-                        <th>Payment Time</th>
                         <th>Actions</th>
                       </tr>
                     </thead>
@@ -52,12 +49,16 @@
                         @foreach ($bookings as $booking )
                       <tr>
                         <td>
-                          <i class="icon-base ri ri-suitcase-2-line icon-22px text-danger me-3"></i>
-                          <span>{{$booking->patient->user->name}}</span>
+                            <div class="avatar avatar-online">
+                                <img src={{$booking->patient->user->profile_photo}} alt="avatar" class="rounded-circle" />
+                                <span>{{$booking->patient->user->name}}</span>
+                            </div>
                         </td>
                         <td>
-                            <i class="icon-base ri ri-suitcase-2-line icon-22px text-danger me-3"></i>
-                            <span>{{$booking->doctor->user->name}}</span>
+                            <div class="avatar avatar-online">
+                                <img src={{$booking->doctor->user->profile_photo}} alt="avatar" class="rounded-circle" />
+                                <span>{{$booking->doctor->user->name}}</span>
+                            </div>
                           </td>
                         <td>{{ $booking->booking_date }}</td>
                         <td>{{ $booking->booking_time }}</td>
@@ -65,11 +66,6 @@
                           <span class="badge rounded-pill bg-label-primary me-1">{{ $booking->status }}</span>
                         </td>
                         <td>{{ $booking->doctor->session_price }}</td>
-                        <td>{{ $booking->payment_method }}</td>
-                        <td>
-                          <span class="badge rounded-pill bg-label-primary me-1">{{ $booking->payment_status }}</span>
-                        </td>
-                        <td>{{ $booking->payment_time }}</td>
                         <td>
                           <div class="dropdown">
                             <button
@@ -79,19 +75,10 @@
                               <i class="icon-base ri ri-more-2-line icon-18px"></i>
                             </button>
                             <div class="dropdown-menu">
-                              <a class="dropdown-item" href="{{ route('dashboard.bookings.edit', $booking) }}">
+                              <a class="dropdown-item" href="{{ route('bookings.show', $booking->id) }}">
                                 <i class="icon-base ri ri-pencil-line icon-18px me-1"></i>
-                                Edit</a
+                                View Booking</a
                               >
-                              <form action="{{ route('dashboard.bookings.delete', $booking) }}" method="POST" style="display: inline;">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="dropdown-item">
-                                    <i class="icon-base ri ri-delete-bin-6-line icon-18px me-1"></i>
-                                    Delete
-                                </button>
-                            </form>
-
                             </div>
                           </div>
                         </td>
