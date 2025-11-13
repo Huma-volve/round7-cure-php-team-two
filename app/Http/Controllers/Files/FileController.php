@@ -75,7 +75,7 @@ class FileController
         }
     }
 
-    public static function compareFiles(?string $oldImageName, UploadedFile $newFile, $folder): bool
+    public static function compareFiles(?string $oldImageName,  $newFile, $folder): bool
     {
         if (!$oldImageName) return false;
 

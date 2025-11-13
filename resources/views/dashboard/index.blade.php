@@ -1,4 +1,7 @@
 {{-- resources/views/dashboard.blade.php --}}
+<script >
+    localStorage.setItem('has_account', 'true');
+</script>
 @extends('dashboard.layouts.dashboard')
 
 @section('title', 'Dashboard')

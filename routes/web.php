@@ -1,28 +1,20 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Dashboard\doctor\availableTimeController;
 use App\Http\Controllers\Dashboard\QuestionController;
 use App\Http\Controllers\Dashboard\SettingController;
-use  App\Http\Controllers\Dashboard\DoctorController;
 use App\Http\Controllers\Api\BookingController;
+use Illuminate\Support\Facades\Route;
+
+Route::get('/',function(){
+        return redirect()->route('login');
+    })->middleware('guest');
 
 
-Route::get('/', function () {
+   Route::middleware(['auth','role-check'])->get('/',function(){
+       return "hello patient";
+   })->name('dashboard');
 
-    return redirect()->route('login');
-})->name('dashboard');
-
-Route::get('/register', function () {
-    return view('dashboard.auth.login');
-})->name('register');
-
-Route::get('/login', function () {
-    return view('dashboard.auth.login');
-})->name('login');
-Route::get('/forgot-password', function () {
-    return view('dashboard.auth.forgot-password');
-})->name('password.request');
 
 Route::get('/doctors', fn() => 'Payment successful!')->name('doctors.index');
 Route::get('/doctors/create', fn() => 'Payment successful!')->name('doctors.create');
@@ -49,26 +41,23 @@ Route::get('/cancel', fn() => 'Payment canceled.')->name('stripe.cancel');
 Route::middleware('auth')->prefix('/dashboard')->group(
    function()
    {
-      Route::get('doctor',function()
-      {
-          $doctor=new DoctorController();
-          return $doctor->show();
-
-      })->middleware('role:doctor');
+      Route::get('doctor',[availableTimeController::class,'view'])->middleware('role:doctor')->name('doctor-dashboard');
 
       Route::get('admin',function()
       {
-//          return view('dashboard');
-             return "this is admin";
+
+             
 
 
       })->middleware('role:admin');
    }
 );
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
+
+//Route::middleware('auth')->group(function () {
+//    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+//    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+//    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+//});
 
 require __DIR__.'/auth.php';
+require __DIR__.'/doctor.php';
