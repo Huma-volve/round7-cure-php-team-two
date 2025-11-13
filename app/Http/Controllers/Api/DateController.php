@@ -15,4 +15,7 @@ class DateController extends Controller
         $totalMinutes = $startTime->diffInMinutes($endTime);
         return $totalMinutes;
     }
+public static function IsValid($date){
+    return Carbon::parse($date)->isAfter(Carbon::now());
+}
 }

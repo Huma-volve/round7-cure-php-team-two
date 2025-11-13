@@ -26,7 +26,7 @@ class DashboardController extends Controller
 
         // 1) bookings count in range
         $bookingsQuery = Booking::where('doctor_id', $doctor->id)
-            ->whereBetween('starts_at', [$from->startOfDay(), $to->endOfDay()]);
+            ->whereBetween('created_at', [$from->startOfDay(), $to->endOfDay()]);
 
         $bookingsCount = (int) $bookingsQuery->count();
 

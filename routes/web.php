@@ -1,8 +1,6 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Dashboard\doctor\availableTimeController;
 use App\Http\Controllers\Dashboard\QuestionController;
 use App\Http\Controllers\Dashboard\SettingController;
 use App\Http\Controllers\Dashboard\DoctorController;
@@ -37,27 +35,19 @@ Route::resource('settings', SettingController::class);
 
 /* 
 Route::middleware('auth')->prefix('/dashboard')->group(
-    function () {
-        Route::get('doctor', function () {
-            $doctor = new DoctorController();
-            return $doctor->show();
+   function()
+   {
+      Route::get('doctor',[availableTimeController::class,'view'])->middleware('role:doctor')->name('doctor-dashboard');
 
         })->middleware('role:doctor');
 
-        Route::get('admin', function () {
-            //          return view('dashboard');
-            return "this is admin";
+
 
 
         })->middleware('role:admin');
     }
 );
- */
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
+*/
 
 Route::middleware(['auth', 'can:isDoctor'])->prefix('doctor')->name('doctor.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -66,5 +56,12 @@ Route::middleware(['auth', 'can:isDoctor'])->prefix('doctor')->name('doctor.')->
     Route::get('/bookings', [DashboardController::class, 'bookings'])->name('bookings.index'); // optional
     Route::get('/payments', [DashboardController::class, 'payments'])->name('payments.index'); // optional
 });
+
+//Route::middleware('auth')->group(function () {
+//    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+//    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+//    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+//});
+
 require __DIR__ . '/auth.php';
-//require __DIR__ . '/doctor.php';
+require __DIR__ . '/doctor.php';
