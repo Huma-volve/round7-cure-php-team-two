@@ -75,7 +75,7 @@ class BookingController extends Controller
         ], 200);
     }
 
-    public function destroy(Request $request,$id)
+    public function cancel($id)
     {
         $booking=Booking::findOrFail($id);
 
@@ -86,7 +86,7 @@ class BookingController extends Controller
             ($user->patient && $booking->patient_id === $user->patient->id) ||
             ($user->doctor && $booking->doctor_id === $user->doctor->id)
         ) {
-            $booking->delete();
+            $booking->update(['status' => 'canceled']);
             return response()->json(['message' => 'Booking canceled successfully'], 200);
         }
         // Unauthorized
