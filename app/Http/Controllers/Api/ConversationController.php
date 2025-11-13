@@ -45,25 +45,25 @@ class ConversationController extends Controller
             ->findOrFail($id);
     }
 
-    public function addParticipant(Request $request, Conversation $conversation)
-    {
-        $request->validate([
-            'user_id' => ['required', 'int', 'exists:users,id'],
-        ]);
+    // public function addParticipant(Request $request, Conversation $conversation)
+    // {
+    //     $request->validate([
+    //         'user_id' => ['required', 'int', 'exists:users,id'],
+    //     ]);
 
-        $conversation->participants()->attach($request->post('user_id'), [
-            'joined_at' => Carbon::now(),
-        ]);
-    }
+    //     $conversation->participants()->attach($request->post('user_id'), [
+    //         'joined_at' => Carbon::now(),
+    //     ]);
+    // }
 
-    public function removeParticipant(Request $request, Conversation $conversation)
-    {
-        $request->validate([
-            'user_id' => ['required', 'int', 'exists:users,id'],
-        ]);
+    // public function removeParticipant(Request $request, Conversation $conversation)
+    // {
+    //     $request->validate([
+    //         'user_id' => ['required', 'int', 'exists:users,id'],
+    //     ]);
 
-        $conversation->participants()->detach($request->post('user_id'));
-    }
+    //     $conversation->participants()->detach($request->post('user_id'));
+    // }
 
     public function markAsRead($id)
     {
