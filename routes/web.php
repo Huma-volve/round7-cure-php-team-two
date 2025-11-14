@@ -24,11 +24,11 @@ Route::get('/bookings', [BookingController::class, 'index'])->name('bookings.ind
 
 Route::get('/bookings/{booking}/show', [BookingController::class, 'show'])->name('bookings.show');
 
-Route::delete('bookings/{booking}/cancel', [BookingController::class, 'destroy'])->name('bookings.delete');
 //doctor bookings
 Route::get('doctor/bookings', [BookingController::class, 'doctorBookings']);
+Route::delete('doctor/bookings/{id}/cancel', [BookingController::class, 'cancel'])->name('doctor.bookings.cancel');
 //cancel booking
-Route::delete('doctor/bookings/{booking}/cancel', [BookingController::class, 'destroy']);
+Route::delete('doctor/bookings/{booking}/cancel', [BookingController::class, 'cancel']);
 Route::get('/success', fn() => 'Payment successful!')->name('stripe.success');
 Route::get('/cancel', fn() => 'Payment canceled.')->name('stripe.cancel');
 

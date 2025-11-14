@@ -15,7 +15,7 @@ class BookingController extends Controller
     {
         $this->middleware('permission:make booking', ['only' => ['store']]);
         $this->middleware('permission:reschedule booking', ['only' => ['reschedule']]);
-        $this->middleware('permission:cancel booking', ['only' => ['cancel']]);
+        //$this->middleware('permission:cancel booking', ['only' => ['cancel']]);
     }
 
     public function index(){
@@ -47,7 +47,13 @@ class BookingController extends Controller
 
     public function show(Request $request,Booking $booking)
     {
-        return view('dashboard.bookings.show',compact('booking'));
+        $booking->load('patient.user','doctor.user');
+        if(Auth::user()->admin){
+            return view('dashboard.bookings.admin.show',compact('booking'));
+        }
+        if(Auth::user()->doctor){
+            return view('dashboard.bookings.doctor.show',compact('booking'));
+        }
     }
 
     public function reschedule(UpdateRequest $request, $id)
@@ -84,11 +90,11 @@ class BookingController extends Controller
             ($user->patient && $booking->patient_id === $user->patient->id) ||
             ($user->doctor && $booking->doctor_id === $user->doctor->id)
         ) {
-            $booking->update(['status' => 'canceled']);
-            return response()->json(['message' => 'Booking canceled successfully'], 200);
+            $booking->update(['status' => 'Cancelled']);
+            return redirect()->back()->with('success', 'Booking cancelled successfully');
         }
         // Unauthorized
-        return response()->json(['message' => 'Unauthorized to cancel this booking'], 403);
+        return redirect()->back()->with('success', 'Un Authorized to cancel thisBooking');
     }
 
     public function patientBookings()
@@ -100,12 +106,12 @@ class BookingController extends Controller
 
     public function doctorBookings()
     {
-        $bookings = Auth::user()->doctor->bookings()
+        $bookings = Auth::user()->doctor->bookings()->where('status','!=','Cancelled')
             ->with('patient.user')
             ->orderBy('booking_date')
             ->orderBy('booking_time')
             ->get();
 
-            return response()->json(['message'=>"Doctor bookings fetched successfully",'data'=>$bookings],200);
+            return view('dashboard.bookings.doctor.index',compact('bookings'));
     }
 }
