@@ -14,8 +14,8 @@ class BookingController extends Controller
     public function __construct()
     {
         $this->middleware('permission:make booking', ['only' => ['store']]);
-        $this->middleware('permission:reschedule booking', ['only' => ['update']]);
-        $this->middleware('permission:cancel booking', ['only' => ['destroy']]);
+        $this->middleware('permission:reschedule booking', ['only' => ['reschedule']]);
+        $this->middleware('permission:cancel booking', ['only' => ['cancel']]);
     }
 
     public function index(){
@@ -50,13 +50,12 @@ class BookingController extends Controller
         return view('dashboard.bookings.show',compact('booking'));
     }
 
-    public function update(UpdateRequest $request, $id)
+    public function reschedule(UpdateRequest $request, $id)
     {
         $booking = Booking::findOrFail($id);
         $user = Auth::user();
 
         if (
-            !$user->admin &&
             (!$user->patient || $booking->patient_id !== $user->patient->id)
         ) {
             return response()->json(['message' => 'Unauthorized to update this booking'], 403);
@@ -82,7 +81,6 @@ class BookingController extends Controller
         $user=Auth::user();
 
         if (
-            ($user->admin) ||
             ($user->patient && $booking->patient_id === $user->patient->id) ||
             ($user->doctor && $booking->doctor_id === $user->doctor->id)
         ) {
