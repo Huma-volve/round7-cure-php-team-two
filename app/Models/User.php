@@ -100,17 +100,40 @@ class User extends Authenticatable
             ->where('favoritable_id', $doctor->id)
             ->exists();
     }
-    public function chats()
-    {
-        return $this->hasMany(Chat::class, 'created_by');
-    }
-
+   
       public function routeNotificationForOneSignal() : array{
         return ['tags'=>['key'=>'userId','relation'=>'=', 'value'=>(string)($this->id)]];
     }
 
      public function sendNewMessageNotification(array $data) : void {
         $this->notify(new Messagesent($data));
+    }
+    
+     public function conversations()
+    {
+        return $this->belongsToMany(Conversation::class, 'participants')
+            ->latest('last_message_id')
+            ->withPivot([
+                'role', 'joined_at'
+            ]);
+    }
+
+    public function sentMessages()
+    {
+        return $this->hasMany(Message::class, 'user_id', 'id');
+    }
+
+    public function receivedMessages()
+    {
+        return $this->belongsToMany(Message::class, 'recipients')
+            ->withPivot([
+                'read_at', 'deleted_at',
+            ]);
+    }
+
+    public function getAvatarUrlAttribute()
+    {
+        return 'https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=' . $this->name;
     }
 
 }

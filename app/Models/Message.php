@@ -2,33 +2,39 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Message extends Model
 {
-    use SoftDeletes;
+    use HasFactory;
 
-    protected $fillable = [
-        'chat_id',
-        'user_id',
-        'message',
-        'is_read',
+     protected $fillable = [
+        'conversation_id', 'user_id', 'body', 'type',
     ];
-    protected $touches=['chat'];
 
-    public function chat()
+    protected $casts = [
+        'body' => 'json',
+    ];
+
+    public function conversation()
     {
-        return $this->belongsTo(Chat::class, 'chat_id');
+        return $this->belongsTo(Conversation::class);
     }
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class)->withDefault([
+            'name' => __('User')
+        ]);
     }
 
-    public function notifications()
+    public function recipients()
     {
-        return $this->morphMany(Notification::class, 'notifiable');
+        return $this->belongsToMany(User::class, 'recipients')
+            ->withPivot([
+                'read_at', 'deleted_at',
+            ]);
     }
 }
