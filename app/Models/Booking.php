@@ -8,6 +8,11 @@ class Booking extends Model
 {
     use SoftDeletes;
 
+    protected $casts = [
+        'booking_date' => 'date',
+        'payment_time'=>'datetime'
+    ];
+
     protected $fillable = [
         'patient_id',
         'doctor_id',

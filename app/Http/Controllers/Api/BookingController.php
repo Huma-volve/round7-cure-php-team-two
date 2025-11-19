@@ -6,33 +6,39 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Booking;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\Booking\StoreRequest;
+use App\Http\Requests\Booking\UpdateRequest;
 
 class BookingController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('permission:reschedule booking', ['only' => ['update']]);
-        $this->middleware('permission:cancel booking', ['only' => ['destroy']]);
+        $this->middleware('permission:make booking', ['only' => ['store']]);
+        $this->middleware('permission:reschedule booking', ['only' => ['reschedule']]);
+        //$this->middleware('permission:cancel booking', ['only' => ['cancel']]);
     }
 
-    public function store(Request $request)
+    public function index(){
+        $bookings=Booking::with('patient.user','doctor.user')->orderBy('booking_date','desc')->get();
+        return view('dashboard.bookings.index',compact('bookings'));
+    }
+
+    public function store(StoreRequest $request)
     {
-        $request->validate([
-            'doctor_id' => 'required|exists:doctors,id',
-            'booking_date' => 'required|date',
-            'booking_time' => 'required|date_format:H:i:s',
-            'payment_method' => 'required|in:PayPal,Stripe,Cash',
-        ]);
+
+        if (!Auth::user()->patient) {
+            return response()->json(['message' => 'Only patients can make bookings'], 403);
+        }
+
+        $validated=$request->validated();
 
         $patient = Auth::user()->patient;
 
-        $booking = Booking::create([
-            'patient_id' => $patient->id,
-            'doctor_id' => $request->doctor_id,
-            'booking_date' => $request->booking_date,
-            'booking_time' => $request->booking_time,
-            'payment_method' => $request->payment_method,
-        ]);
+        $booking = Booking::create(array_merge(
+            $validated,
+            ['patient_id' => $patient->id]
+        ));
+
         return response()->json([
             'message' => 'Booking created successfully',
             'data' => $booking,
@@ -41,41 +47,42 @@ class BookingController extends Controller
 
     public function show(Request $request,Booking $booking)
     {
-        return response()->json([
-            'message' => 'Booking fetched successfully',
-            'data' => $booking,
-        ], 200);
+        $booking->load('patient.user','doctor.user');
+        if(Auth::user()->admin){
+            return view('dashboard.bookings.admin.show',compact('booking'));
+        }
+        if(Auth::user()->doctor){
+            return view('dashboard.bookings.doctor.show',compact('booking'));
+        }
     }
 
-    public function update(Request $request, $id)
+    public function reschedule(UpdateRequest $request, $id)
     {
         $booking = Booking::findOrFail($id);
         $user = Auth::user();
 
-        if (!$user->patient || $booking->patient_id !== $user->patient->id) {
+        if (
+            (!$user->patient || $booking->patient_id !== $user->patient->id)
+        ) {
             return response()->json(['message' => 'Unauthorized to update this booking'], 403);
         }
 
-        $request->validate([
-            'booking_date' => 'required|date',
-            'booking_time' => 'required|date_format:H:i:s',
-        ]);
+        $validated = $request->validated();
 
-        $booking->update([
-            'booking_date' => $request->booking_date,
-            'booking_time' => $request->booking_time,
-        ]);
+        $booking->update(array_merge(
+            $validated,
+            ['status' => 'rescheduled']
+        ));
 
         return response()->json([
-            'message' => 'Booking updated successfully',
+            'message' => 'Booking Rescheduled successfully',
             'data' => $booking,
         ], 200);
     }
 
-
-    public function destroy(Request $request,$id)
+    public function cancel($id)
     {
-        $booking=Booking::where('id',$id)->findOrFail();
+        $booking=Booking::findOrFail($id);
 
         $user=Auth::user();
 
@@ -83,11 +90,11 @@ class BookingController extends Controller
             ($user->patient && $booking->patient_id === $user->patient->id) ||
             ($user->doctor && $booking->doctor_id === $user->doctor->id)
         ) {
-            $booking->delete();
-            return response()->json(['message' => 'Booking canceled successfully'], 200);
+            $booking->update(['status' => 'Cancelled']);
+            return redirect()->back()->with('success', 'Booking cancelled successfully');
         }
         // Unauthorized
-        return response()->json(['message' => 'Unauthorized to cancel this booking'], 403);
+        return redirect()->back()->with('success', 'Un Authorized to cancel thisBooking');
     }
 
     public function patientBookings()
@@ -99,12 +106,12 @@ class BookingController extends Controller
 
     public function doctorBookings()
     {
-        $bookings = Auth::user()->doctor->bookings()
+        $bookings = Auth::user()->doctor->bookings()->where('status','!=','Cancelled')
             ->with('patient.user')
             ->orderBy('booking_date')
             ->orderBy('booking_time')
             ->get();
 
-            return response()->json(['message'=>"Doctor bookings fetched successfully",'data'=>$bookings],200);
+            return view('dashboard.bookings.doctor.index',compact('bookings'));
     }
 }
