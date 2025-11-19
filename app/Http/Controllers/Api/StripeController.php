@@ -57,6 +57,13 @@ public function handleWebhook(Request $request)
         $session = $event->data->object;
         $bookingId = $session->metadata->booking_id ?? null;
 
+        // ✅ Retrieve PaymentIntent to get payment time
+        $paymentIntent = \Stripe\PaymentIntent::retrieve($session->payment_intent);
+
+        // Usually one charge per payment
+        $charge = $paymentIntent->charges->data[0] ?? null;
+        $paymentTime = $charge ? date('Y-m-d H:i:s', $charge->created) : null;
+
         if ($bookingId) {
             $booking = Booking::find($bookingId);
 
@@ -66,6 +73,7 @@ public function handleWebhook(Request $request)
                     'payment_status' => 'Paid',
                     'stripe_session_id' => $session->id,
                     'stripe_payment_intent' => $session->payment_intent,
+                    'payment_time' => $paymentTime,
                 ]);
 
                 Log::info('✅ Booking payment confirmed: ' . $bookingId);
