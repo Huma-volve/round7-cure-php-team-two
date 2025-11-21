@@ -85,7 +85,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/doctors/{doctor}/favorite', [DoctorController::class, 'toggleFavorite']);
 
     // Search
-    Route::get('/search', [SearchController::class, 'search']);
+    Route::post('/search', [SearchController::class, 'search']);
     Route::get('/search/history', [SearchController::class, 'history']);
     Route::delete('/search/history', [SearchController::class, 'clearHistory']);
 
