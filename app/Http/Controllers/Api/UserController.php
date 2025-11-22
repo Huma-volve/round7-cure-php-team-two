@@ -76,9 +76,11 @@ class UserController extends Controller
     }
 
 
-    public function update(UpdateUserRequest $request)
+    public function update(UpdateUserRequest $request,$user=null)
     {
-        $user = auth()->user();
+        if($user==null){$user = auth()->user();}
+
+
         $this->authorize('update',$user);
         $userData = $request->only('name', 'email');
 
@@ -97,10 +99,10 @@ class UserController extends Controller
         return response()->json([new UserResource($user), 'User updated successfully'], 200);
     }
 
-    public function destroy( )
+    public function destroy($user=null)
     {
+        if($user==null){$user = auth()->user();}
 
-        $user = auth()->user();
         $this->authorize('delete', $user);
         $user->forceDelete();
         FileController::deleteFile($user->image,'images/users');

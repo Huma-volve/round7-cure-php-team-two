@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class availableTimeController extends Controller
 {
-
+ private const REDIRECTED_ROUTE='doctor.available-time';
 
 //public static function show()
 //{
@@ -35,7 +35,7 @@ public function add(Request $request)
     $time[]=request('time');
     $doctor->available_slots=$time;
     $doctor->save();
-   return redirect()->route('doctor-dashboard');
+   return redirect()->route(self::REDIRECTED_ROUTE);
 }
 public function update(Request $request)
 {
@@ -56,7 +56,7 @@ public function update(Request $request)
         }
         $doctor->available_slots=$time;
         $doctor->save();
-        return redirect()->route('doctor-dashboard');
+        return redirect()->route(self::REDIRECTED_ROUTE);
 
 
 }
@@ -69,7 +69,7 @@ public function destroy(Request $request)
      unset($time[$key]);
      $doctor->available_slots=$time;
      $doctor->save();
-     return redirect()->route('doctor-dashboard');
+     return redirect()->route(self::REDIRECTED_ROUTE);
  }
  return redirect()->back();
 

@@ -1,5 +1,5 @@
 <nav class="layout-navbar container-xxl navbar-detached navbar navbar-expand-xl align-items-center bg-navbar-theme"
-    id="layout-navbar">
+     id="layout-navbar">
     <div class="layout-menu-toggle navbar-nav align-items-xl-center me-4 me-xl-0 d-xl-none">
         <a class="nav-item nav-link px-0 me-xl-6" href="javascript:void(0)"><i
                 class="icon-base ri ri-menu-line icon-md"></i></a>
@@ -11,15 +11,15 @@
             <div class="nav-item d-flex align-items-center">
                 <i class="icon-base ri ri-search-line icon-lg lh-0"></i>
                 <input type="text" class="form-control border-0 shadow-none" placeholder="Search..."
-                    aria-label="Search..." />
+                       aria-label="Search..." />
             </div>
         </div>
 
         <ul class="navbar-nav flex-row align-items-center ms-md-auto">
             <li class="nav-item lh-1 me-4">
                 <a class="github-button"
-                    href="https://github.com/themeselection/materio-bootstrap-html-admin-template-free"
-                    data-icon="octicon-star" data-size="large" data-show-count="true" aria-label="Star">Star</a>
+                   href="https://github.com/themeselection/materio-bootstrap-html-admin-template-free"
+                   data-icon="octicon-star" data-size="large" data-show-count="true" aria-label="Star">Star</a>
             </li>
 
             {{-- User dropdown --}}
@@ -36,7 +36,7 @@
                                 <div class="flex-shrink-0 me-3">
                                     <div class="avatar avatar-online">
                                         <img src="{{ asset('assets/img/avatars/1.png') }}" alt="avatar"
-                                            class="w-px-40 h-auto rounded-circle" />
+                                             class="w-px-40 h-auto rounded-circle" />
                                     </div>
                                 </div>
                                 <div class="flex-grow-1">
@@ -58,13 +58,11 @@
                     </li>
                     <li>
                         <div class="d-grid px-4 pt-2 pb-1">
-                            <a class="btn btn-danger d-flex" href=""
-                                onclick="event.preventDefault();document.getElementById('logout-form').submit();">
+                            <a class="btn btn-danger d-flex" href="javascript:void(0);"
+                               onclick="event.preventDefault();document.getElementById('logout-form').submit();">
                                 <small class="align-middle">Logout</small>
                                 <i class="ri ri-logout-box-r-line ms-2 ri-xs"></i>
                             </a>
-                            <form id="logout-form" action="" method="POST" class="d-none">@csrf
-                            </form>
                         </div>
                     </li>
                 </ul>
@@ -72,3 +70,7 @@
         </ul>
     </div>
 </nav>
+
+<form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+    @csrf
+</form>
