@@ -76,7 +76,7 @@ class UserController extends Controller
     }
 
 
-    public function update(UpdateUserRequest $request,$user=null)
+    public  function update(UpdateUserRequest $request,$user=null)
     {
         if($user==null){$user = auth()->user();}
 
@@ -101,6 +101,7 @@ class UserController extends Controller
 
     public function destroy($user=null)
     {
+
         if($user==null){$user = auth()->user();}
 
         $this->authorize('delete', $user);

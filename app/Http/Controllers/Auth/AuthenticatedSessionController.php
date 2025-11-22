@@ -31,11 +31,11 @@ class AuthenticatedSessionController extends Controller
         if($user->hasRole('doctor')){
             return redirect()->route('doctor-dashboard');
         }
-        if($user->hasRole('admin')){
+        if($user->hasRole('admin')||$user->hasRole('helper')){
             return redirect()->route('admin-dashboard');
         }
 
-        return "this is patient";
+
     }
 
     /**

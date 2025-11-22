@@ -52,7 +52,7 @@ Route::middleware('auth')->prefix('/dashboard')->group(
           return view('dashboard.Admin.index');
 
 
-      })->middleware('role:admin')->name('admin-dashboard');
+      })->middleware('role:admin|helper')->name('admin-dashboard');
    }
 );
 

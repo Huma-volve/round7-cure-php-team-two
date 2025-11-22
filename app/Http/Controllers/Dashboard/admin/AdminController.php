@@ -3,17 +3,20 @@ namespace App\Http\Controllers\Dashboard\admin;
 
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Dashboard\HelperController;
 use App\Http\Controllers\Files\FileController;
 use App\Http\Controllers\Files\ImageController;
 use App\Http\Requests\Doctor\UpdateDoctorRequest;
 use App\Http\Requests\User\StoreUserRequest;
+use App\Http\Requests\User\UpdateUserRequest;
+use App\Models\Admin;
 use App\Models\Doctor;
 use App\Models\Specialty;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
 
-class AdminController extends Controller
+class AdminController extends UserController
 {
     public function viewDoctors(){
         $doctors=Doctor::with(['user','specialty'])->paginate('10');
@@ -45,15 +48,7 @@ class AdminController extends Controller
             unset($data['password']);
         }
 
-//        if (!$request->hasFile('image') && $request->input('remove_image') == 1) {
-//            FileController::deleteFile($user->profile_photo, 'images/users');
-//            $data['profile_photo'] = null;
-//        }
-//
-//        if ($request->hasFile('image')) {
-//            $image = FileController::updateFile($request->file('image'), $user->profile_photo, 'images/users');
-//            $data['profile_photo'] = $image;
-//        }
+
         $data['profile_photo']=ImageController::update_user_image($request,$user);
 
         $user->update($data);
@@ -89,6 +84,38 @@ public function AddDoctor(StoreUserRequest $request)
    $user->assignRole('doctor');
    return redirect()->route('admin.doctor.index');
 
+}
+public function ViewHelpers()
+{
+        $helpers= HelperController::GetHelpers();
+        $helpers->load('user');
+        return view('dashboard.Admin.Helpers.View',compact('helpers'));
+}
+public function AddHelperView(Admin $helper)
+{
+
+        return view('dashboard.Admin.Helpers.Add',compact('helper'));
+}
+public function AddHelper(StoreUserRequest $request)
+{
+
+       $helper= HelperController::storeHelper($request);
+
+       return redirect()->route('admin.helper.index');
+}
+public function EditHelper(User $user){
+        return view('dashboard.Admin.Helpers.Edit',compact('user'));
+}
+
+public function UpdateHelper(UpdateUserRequest $request,User $user)
+{
+        $helper=HelperController::updateHelper($request,$user);
+    return redirect()->route('admin.helper.index');
+}
+public function DestroyHelper(User $helper)
+{
+     HelperController::DeleteHelper($helper);
+    return redirect()->route('admin.helper.index');
 }
 
 }
