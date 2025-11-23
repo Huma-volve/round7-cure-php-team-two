@@ -3,6 +3,12 @@
 use App\Http\Controllers\Dashboard\doctor\availableTimeController;
 use App\Http\Controllers\Dashboard\QuestionController;
 use App\Http\Controllers\Dashboard\SettingController;
+use App\Http\Controllers\Dashboard\HomeController;
+use App\Http\Controllers\Dashboard\ChatController;
+use App\Http\Controllers\Api\ConversationController;
+use App\Http\Controllers\Api\MessageController;
+use App\Http\Controllers\Auth\AuthController;
+
 use Illuminate\Support\Facades\Route;
 
 Route::get('/',function(){
@@ -10,12 +16,10 @@ Route::get('/',function(){
     })->middleware('guest');
 
 
+
    Route::middleware(['auth','role-check'])->get('/',function(){
        return "hello patient";
    })->name('dashboard');
-
-
-
 
 
 
@@ -28,31 +32,25 @@ Route::get('/cancel', fn() => 'Payment canceled.')->name('stripe.cancel');
 
 
 
+Route::middleware('auth')->prefix('dashboard')->group(
+   function()
+   {
+
+      Route::get('doctor',[availableTimeController::class,'view'])->middleware('role:doctor')->name('doctor-dashboard');
+      Route::get('admin-dashboard',[HomeController::class,'index'])->middleware('role:admin')->name('admin-dashboard');
+    //   Route::get('messenger',[ChatController::class,'index']);
+
     Route::resource('questions', QuestionController::class);
     Route::resource('settings', SettingController::class);
 
 
-
-Route::middleware('auth')->prefix('/dashboard')->group(
-   function()
-   {
-      Route::get('doctor',[availableTimeController::class,'view'])->middleware('role:doctor')->name('doctor-dashboard');
-
-      Route::get('admin',function()
-      {
-
-             
-
-
-      })->middleware('role:admin');
-   }
+}
 );
 
-//Route::middleware('auth')->group(function () {
-//    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-//    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-//    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-//});
 
 require __DIR__.'/auth.php';
 require __DIR__.'/doctor.php';
+Route::get('/{id?}', [ChatController::class, 'index'])
+  ->middleware('auth')
+   ->name('messenger');
+

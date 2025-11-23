@@ -11,11 +11,11 @@ class availableTimeController extends Controller
 {
 
 
-//public static function show()
-//{
+// public static function show()
+// {
 //    $doctor=self::doctor();
 //    return view('dashboard.doctor');
-//}
+// }
 public static function show(){
     return DoctorController::doctor()->available_slots;
 }
