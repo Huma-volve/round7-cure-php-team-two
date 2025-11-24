@@ -10,80 +10,24 @@ use App\Models\Booking;
 use App\Models\Payment;
 use App\Models\Patient;
 use App\Models\User;
+use App\Services\Reports\AnalyticsService;
 
 class DashboardController extends Controller
 {
     //
     // Dashboard main view
-    public function index(Request $request)
+    public function index(Request $req, AnalyticsService $analytics)
     {
-        $user = $request->user();
-        $doctor = $user->doctor; // assumes hasOne relation
+        $doctorId = auth()->user()->doctor->id;
+        $from = $req->get('from');
+        $to = $req->get('to');
 
-        // default range: last 30 days
-        $to = Carbon::now();
-        $from = $request->filled('from') ? Carbon::parse($request->from) : $to->copy()->subDays(29);
+        $totals = $analytics->getTotals($doctorId, $from, $to, true, true); // count patients ever
+        $bookingsTrend = $analytics->bookingsTrend($doctorId, $from, $to, 'day', true);
+        $revenueTrend = $analytics->revenueTrend($doctorId, $from, $to, 'day', true);
+        $byStatus = $analytics->bookingsByStatus(null, $from, $to);
 
-        // 1) bookings count in range
-        $bookingsQuery = Booking::where('doctor_id', $doctor->id)
-            ->whereBetween('created_at', [$from->startOfDay(), $to->endOfDay()]);
-
-        $bookingsCount = (int) $bookingsQuery->count();
-
-        // 2) revenue sum in range (payments)
-        $revenue = (float) Payment::where('doctor_id', $doctor->id)
-            ->whereBetween('paid_at', [$from->startOfDay(), $to->endOfDay()])
-            ->where('status', 'paid')
-            ->sum('amount');
-
-        // 3) unique patients count (ever)
-        $patientsCount = Booking::where('doctor_id', $doctor->id)
-            ->distinct('patient_id')->count('patient_id');
-
-        // 4) bookings per day for chart (group by date)
-        $period = $from->copy();
-        // build labels and values arrays
-        $labels = [];
-        $values = [];
-        $days = $from->diffInDays($to) + 1;
-        for ($i = 0; $i < $days; $i++) {
-            $d = $from->copy()->addDays($i);
-            $labels[] = $d->format('Y-m-d');
-            $values[$d->format('Y-m-d')] = 0;
-        }
-
-        $agg = Booking::select(DB::raw("DATE(starts_at) as day"), DB::raw("COUNT(*) as cnt"))
-            ->where('doctor_id', $doctor->id)
-            ->whereBetween('starts_at', [$from->startOfDay(), $to->endOfDay()])
-            ->groupBy('day')
-            ->orderBy('day')
-            ->get();
-
-        foreach ($agg as $row) {
-            $values[$row->day] = (int) $row->cnt;
-        }
-
-        $series = array_values($values);
-
-        // 5) last 10 bookings
-        $latestBookings = Booking::with(['patient.user'])->where('doctor_id', $doctor->id)
-            ->latest('starts_at')->limit(10)->get();
-
-        // 6) latest payments
-        $latestPayments = Payment::where('doctor_id', $doctor->id)
-            ->latest('paid_at')->limit(10)->get();
-
-        return view('doctor.dashboard', compact(
-            'from',
-            'to',
-            'bookingsCount',
-            'revenue',
-            'patientsCount',
-            'labels',
-            'series',
-            'latestBookings',
-            'latestPayments'
-        ));
+        return view('dashboard.doctor.dashboard', compact('totals', 'bookingsTrend', 'revenueTrend', 'byStatus'));
     }
 
     // Patients list
