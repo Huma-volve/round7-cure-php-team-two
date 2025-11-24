@@ -4,13 +4,18 @@ namespace App\Http\Controllers\Dashboard\doctor;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Files\FileController;
-use App\Http\Requests\User\UpdateUserRequest;
+use App\Http\Controllers\Files\ImageController;
+use App\Http\Requests\Doctor\UpdateDoctorRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class DoctorController extends Controller
 {
+    public function index()
+    {
+        return view('dashboard.Doctor.index');
+    }
     public static function doctor()
     {
         return Auth::user()->doctor;
@@ -25,8 +30,13 @@ class DoctorController extends Controller
 
         return view('dashboard.Doctor.profile', ['doctor' => $doctor]);
     }
-    public function update(UpdateUserRequest $request)
+    public function add(Request $request)
     {
+        $data = $request->validate(['']);
+    }
+    public static function update(UpdateDoctorRequest $request)
+    {
+
 
         $doctor = Auth::user();
         $data = $request->validated();
@@ -35,16 +45,8 @@ class DoctorController extends Controller
         } else {
             unset($data['password']);
         }
+        $data['profile_photo'] = ImageController::update_user_image($request, $doctor);
 
-        if (!$request->hasFile('profile_image') && $request->input('remove_image') == 1) {
-            FileController::deleteFile($doctor->profile_photo, 'images/users');
-            $data['profile_photo'] = null;
-
-        }
-        if ($request->hasFile('profile_image')) {
-            $image = FileController::updateFile($request->file('profile_image'), $doctor->profile_photo, 'images/users');
-            $data['profile_photo'] = $image;
-        }
 
         $doctor->update($data);
         return redirect()->route('doctor.profile');

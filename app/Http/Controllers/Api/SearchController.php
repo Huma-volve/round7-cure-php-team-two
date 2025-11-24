@@ -15,8 +15,8 @@ class SearchController extends Controller
     public function search(SearchRequest $request)
     {
         $userId = $request->user()->id;
-        $query = $request->query;
-        $location = $request->location ?? null;
+      $query = $request->input('query');
+      $location = $request->input('location');
 
         $this->saveSearchHistory($userId, $query, $location);
 
@@ -28,7 +28,7 @@ class SearchController extends Controller
                 $q->where('name', 'like', "%{$query}%");
             })
             ->get();
-            
+
         $locationData = $location ? $this->fetchLocationData($location) : null;
 
         return response()->json([

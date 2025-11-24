@@ -29,14 +29,13 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerate();
         $user=$request->user();
         if($user->hasRole('doctor')){
-            return redirect()->intended('dashboard/doctor');
+            return redirect()->route('doctor-dashboard');
         }
         if($user->hasRole('admin')){
-            return redirect()->intended('dashboard/admin');
+            return redirect()->route('admin-dashboard');
         }
 
-//        return redirect()->intended(route('dashboard', absolute: false));
-        return "hi";
+        return "this is patient";
     }
 
     /**

@@ -1,9 +1,10 @@
 <?php
 
 use App\Http\Controllers\Dashboard\doctor\availableTimeController;
+use App\Http\Controllers\Dashboard\doctor\DoctorController;
 use App\Http\Controllers\Dashboard\QuestionController;
 use App\Http\Controllers\Dashboard\SettingController;
-use App\Http\Controllers\Dashboard\DoctorController;
+//use App\Http\Controllers\Dashboard\DoctorController;
 use App\Http\Controllers\Dashboard\Doctor\DashboardController;
 use App\Http\Controllers\Api\BookingController;
 use Illuminate\Support\Facades\Route;
@@ -44,15 +45,17 @@ Route::resource('settings', SettingController::class);
 Route::middleware('auth')->prefix('/dashboard')->group(
    function()
    {
-      Route::get('doctor',[availableTimeController::class,'view'])->middleware('role:doctor')->name('doctor-dashboard');
+      Route::get('/doctor',[DoctorController::class,'index'])->middleware('role:doctor')
+          ->name('doctor-dashboard');
 
-        })->middleware('role:doctor');
+      Route::get('/admin',function()
+      {
+
+          return view('dashboard.Admin.index');
 
 
-
-
-        })->middleware('role:admin');
-    }
+      })->middleware('role:admin')->name('admin-dashboard');
+   }
 );
 */
 
@@ -64,11 +67,8 @@ Route::middleware(['auth', 'can:isDoctor'])->prefix('doctor')->name('doctor.')->
     Route::get('/payments', [DashboardController::class, 'payments'])->name('payments.index'); // optional
 });
 
-//Route::middleware('auth')->group(function () {
-//    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-//    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-//    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-//});
+
 
 require __DIR__ . '/auth.php';
 require __DIR__ . '/doctor.php';
+require __DIR__ . '/admin.php';
