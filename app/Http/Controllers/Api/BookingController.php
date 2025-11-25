@@ -20,7 +20,7 @@ class BookingController extends Controller
 
     public function index(){
         $bookings=Booking::with('patient.user','doctor.user')->orderBy('booking_date','desc')->get();
-        return view('dashboard.bookings.index',compact('bookings'));
+        return view('dashboard.bookings.admin.index',compact('bookings'));
     }
 
     public function store(StoreRequest $request)
