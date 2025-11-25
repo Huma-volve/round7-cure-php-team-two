@@ -16,13 +16,13 @@
                 <div class="col-auto">
                     <label class="form-label small mb-1">From</label>
                     <input type="date" name="from" class="form-control"
-                        value="{{ request('from', $from->format('Y-m-d')) }}">
+                        value="{{ request('from', $totals['range']['from']) }}">
                 </div>
 
                 <div class="col-auto">
                     <label class="form-label small mb-1">To</label>
                     <input type="date" name="to" class="form-control"
-                        value="{{ request('to', $to->format('Y-m-d')) }}">
+                        value="{{ request('from', $totals['range']['to']) }}">
                 </div>
 
                 <div class="col-auto">
@@ -156,11 +156,11 @@
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Quick Actions</h5>
-                    <a href="{{ route('admin.reports.view') }}" class="btn btn-sm btn-outline-primary mb-2 d-block">Full
-                        Reports</a>
-                    <a href="{{ route('admin.bookings.index') }}"
-                        class="btn btn-sm btn-outline-secondary mb-2 d-block">Manage Bookings</a>
-                    <a href="{{ route('admin.payments.index') }}" class="btn btn-sm btn-outline-secondary d-block">Manage
+                    <!--a href="{{ route('admin.dashboard') }}" class="btn btn-sm btn-outline-primary mb-2 d-block">Full
+                                Reports</a-->
+                    <a href="{{ route('bookings.index') }}" class="btn btn-sm btn-outline-secondary mb-2 d-block">Manage
+                        Bookings</a>
+                    <a href="{{ route('bookings.index') }}" class="btn btn-sm btn-outline-secondary d-block">Manage
                         Payments</a>
                 </div>
             </div>

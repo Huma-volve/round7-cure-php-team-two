@@ -19,16 +19,13 @@ Route::middleware(['auth', 'role-check'])->get('/', function () {
 })->name('dashboard');
  */
 
-Route::get('/doctors', fn() => 'Payment successful!')->name('doctors.index');
-Route::get('/doctors/create', fn() => 'Payment successful!')->name('doctors.create');
-Route::get('/specialties', fn() => 'Payment successful!')->name('specialties.index');
 //all bookings
 Route::get('/bookings', [BookingController::class, 'index'])->name('bookings.index');
 
 Route::get('/bookings/{booking}/show', [BookingController::class, 'show'])->name('bookings.show');
 
 //doctor bookings
-Route::get('doctor/bookings', [BookingController::class, 'doctorBookings']);
+Route::get('doctor/bookings', [BookingController::class, 'doctorBookings'])->name('doctor.bookings.index');
 Route::delete('doctor/bookings/{id}/cancel', [BookingController::class, 'cancel'])->name('doctor.bookings.cancel');
 //cancel booking
 Route::delete('doctor/bookings/{booking}/cancel', [BookingController::class, 'cancel']);
@@ -37,34 +34,28 @@ Route::get('/cancel', fn() => 'Payment canceled.')->name('stripe.cancel');
 
 
 
-Route::resource('questions', QuestionController::class);
-Route::resource('settings', SettingController::class);
+Route::resource('questions', QuestionController::class)->names([
+    'index' => 'questions.index',
+    'create' => 'questions.create',
+    'store' => 'questions.store',
+    'show' => 'questions.view',
+    'edit' => 'questions.edit',
+    'update' => 'questions.update',
+    'destroy' => 'questions.delete',
+]);
+;
+//Route::resource('settings', SettingController::class);
+Route::get('settings', [SettingController::class, 'index'])->name('settings.index');
+Route::put('settings/update/', [SettingController::class, 'update'])->name('settings.update');
 
 
-/* 
-Route::middleware('auth')->prefix('/dashboard')->group(
-   function()
-   {
-      Route::get('/doctor',[DoctorController::class,'index'])->middleware('role:doctor')
-          ->name('doctor-dashboard');
-
-      Route::get('/admin',function()
-      {
-
-          return view('dashboard.Admin.index');
-
-
-      })->middleware('role:admin')->name('admin-dashboard');
-   }
-);
-*/
 
 Route::middleware(['auth', 'can:isDoctor'])->prefix('doctor')->name('doctor.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/patients', [DashboardController::class, 'patients'])->name('patients.index');
-    Route::get('/patients/{patient}', [DashboardController::class, 'showPatient'])->name('patients.show');
-    Route::get('/bookings', [DashboardController::class, 'bookings'])->name('bookings.index'); // optional
-    Route::get('/payments', [DashboardController::class, 'payments'])->name('payments.index'); // optional
+    //Route::get('/patients', [DashboardController::class, 'patients'])->name('patients.index');
+    //Route::get('/patients/{patient}', [DashboardController::class, 'showPatient'])->name('patients.show');
+    //Route::get('/bookings', [DashboardController::class, 'bookings'])->name('bookings.index'); // optional
+    //Route::get('/payments', [DashboardController::class, 'payments'])->name('payments.index'); // optional
 });
 
 

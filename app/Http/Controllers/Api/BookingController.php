@@ -18,9 +18,10 @@ class BookingController extends Controller
         //$this->middleware('permission:cancel booking', ['only' => ['cancel']]);
     }
 
-    public function index(){
-        $bookings=Booking::with('patient.user','doctor.user')->orderBy('booking_date','desc')->get();
-        return view('dashboard.bookings.index',compact('bookings'));
+    public function index()
+    {
+        $bookings = Booking::with('patient.user', 'doctor.user')->orderBy('booking_date', 'desc')->get();
+        return view('dashboard.bookings.admin.index', compact('bookings'));
     }
 
     public function store(StoreRequest $request)
@@ -30,7 +31,7 @@ class BookingController extends Controller
             return response()->json(['message' => 'Only patients can make bookings'], 403);
         }
 
-        $validated=$request->validated();
+        $validated = $request->validated();
 
         $patient = Auth::user()->patient;
 
@@ -45,14 +46,14 @@ class BookingController extends Controller
         ], 201);
     }
 
-    public function show(Request $request,Booking $booking)
+    public function show(Request $request, Booking $booking)
     {
-        $booking->load('patient.user','doctor.user');
-        if(Auth::user()->admin){
-            return view('dashboard.bookings.admin.show',compact('booking'));
+        $booking->load('patient.user', 'doctor.user');
+        if (Auth::user()->admin) {
+            return view('dashboard.bookings.admin.show', compact('booking'));
         }
-        if(Auth::user()->doctor){
-            return view('dashboard.bookings.doctor.show',compact('booking'));
+        if (Auth::user()->doctor) {
+            return view('dashboard.bookings.doctor.show', compact('booking'));
         }
     }
 
@@ -82,9 +83,9 @@ class BookingController extends Controller
 
     public function cancel($id)
     {
-        $booking=Booking::findOrFail($id);
+        $booking = Booking::findOrFail($id);
 
-        $user=Auth::user();
+        $user = Auth::user();
 
         if (
             ($user->patient && $booking->patient_id === $user->patient->id) ||
@@ -101,17 +102,17 @@ class BookingController extends Controller
     {
         $patient = Auth::user()->patient;
         $bookings = $patient->bookings()->with('doctor.user')->get();
-        return response()->json(['message'=>"Patient bookings fetched successfully",'data'=>$bookings],200);
+        return response()->json(['message' => "Patient bookings fetched successfully", 'data' => $bookings], 200);
     }
 
     public function doctorBookings()
     {
-        $bookings = Auth::user()->doctor->bookings()->where('status','!=','Cancelled')
+        $bookings = Auth::user()->doctor->bookings()->where('status', '!=', 'Cancelled')
             ->with('patient.user')
             ->orderBy('booking_date')
             ->orderBy('booking_time')
             ->get();
 
-            return view('dashboard.bookings.doctor.index',compact('bookings'));
+        return view('dashboard.bookings.doctor.index', compact('bookings'));
     }
 }
