@@ -32,7 +32,7 @@ return [
         'role' => 'admin',
     ],
     [
-        'route' => 'admin.doctor.index',
+        'route' => 'doctors.index',
         'label' => 'Doctors',
         'icon' => 'ri ri-user-3-line',
         'role' => 'admin',

@@ -20,13 +20,16 @@ Route::middleware(['auth', 'role-check'])->get('/', function () {
  */
 
 //all bookings
-Route::get('/bookings', [BookingController::class, 'index'])->name('bookings.index');
+/* Route::get('/bookings', [BookingController::class, 'index'])->name('bookings.index');
 
-Route::get('/bookings/{booking}/show', [BookingController::class, 'show'])->name('bookings.show');
+Route::get('/doctors', fn() => 'Payment successful!')->name('doctors.index');
+Route::get('/doctors/create', fn() => 'Payment successful!')->name('doctors.create');
+Route::get('/specialties', fn() => 'Payment successful!')->name('specialties.index');
 
+ */
 //doctor bookings
-Route::get('doctor/bookings', [BookingController::class, 'doctorBookings'])->name('doctor.bookings.index');
-Route::delete('doctor/bookings/{id}/cancel', [BookingController::class, 'cancel'])->name('doctor.bookings.cancel');
+//Route::get('doctor/bookings', [BookingController::class, 'doctorBookings'])->name('doctor.bookings.index');
+//Route::delete('doctor/bookings/{id}/cancel', [BookingController::class, 'cancel'])->name('doctor.bookings.cancel');
 //cancel booking
 Route::delete('doctor/bookings/{booking}/cancel', [BookingController::class, 'cancel']);
 Route::get('/success', fn() => 'Payment successful!')->name('stripe.success');
@@ -48,6 +51,9 @@ Route::resource('questions', QuestionController::class)->names([
 Route::get('settings', [SettingController::class, 'index'])->name('settings.index');
 Route::put('settings/update/', [SettingController::class, 'update'])->name('settings.update');
 
+Route::get('/', function () {
+    return redirect()->route('login');
+})->middleware('guest');
 
 
 Route::middleware(['auth', 'can:isDoctor'])->prefix('doctor')->name('doctor.')->group(function () {
@@ -57,6 +63,41 @@ Route::middleware(['auth', 'can:isDoctor'])->prefix('doctor')->name('doctor.')->
     //Route::get('/bookings', [DashboardController::class, 'bookings'])->name('bookings.index'); // optional
     //Route::get('/payments', [DashboardController::class, 'payments'])->name('payments.index'); // optional
 });
+Route::middleware(['auth', 'role-check'])->get('/', function () {
+    return "hello patient";
+})->name('dashboard');
+
+
+
+Route::middleware('auth')->prefix('/dashboard')->group(function () {
+    //doctor panel
+    Route::middleware('role:doctor')->prefix('/doctor')->group(function () {
+        Route::get('/', [DoctorController::class, 'index'])->name('doctor-dashboard');
+
+        //doctor bookings
+        Route::get('bookings', [BookingController::class, 'doctorBookings'])->name('doctor.bookings.index');
+        //cancel booking
+        Route::delete('bookings/{id}/cancel', [BookingController::class, 'cancel'])->name('doctor.bookings.cancel');
+        //show single booking details
+        Route::get('/bookings/{booking}/show', [BookingController::class, 'show'])->name('bookings.show');
+    });
+
+    //admin panel
+    Route::middleware('role:admin')->prefix('/admin')->group(function () {
+        /*     Route::get('/', function () {
+                return view('dashboard.Admin.index');
+            })->name('admin-dashboard');
+     */
+        //admin bookings page
+        Route::get('/bookings', [BookingController::class, 'index'])->name('bookings.index');
+        //show single booking details
+        Route::get('/bookings/{booking}/show', [BookingController::class, 'show'])->name('bookings.show');
+    });
+
+});
+
+
+
 
 
 
