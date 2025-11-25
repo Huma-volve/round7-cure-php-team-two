@@ -16,7 +16,7 @@ class DoctorController extends Controller
     {
         return view('dashboard.Doctor.index');
     }
-    public static  function doctor()
+    public static function doctor()
     {
         return Auth::user()->doctor;
     }
@@ -26,27 +26,26 @@ class DoctorController extends Controller
     }
     public function view()
     {
-        $doctor=$this->show();
+        $doctor = $this->show();
 
-        return view('dashboard.Doctor.profile',['doctor' => $doctor]);
+        return view('dashboard.Doctor.profile', ['doctor' => $doctor]);
     }
     public function add(Request $request)
     {
-        $data=$request->validate(['']);
+        $data = $request->validate(['']);
     }
     public static function update(UpdateDoctorRequest $request)
     {
 
 
-        $doctor=Auth::user();
-        $data=$request->validated();
+        $doctor = Auth::user();
+        $data = $request->validated();
         if ($request->filled('password')) {
             $data['password'] = Hash::make($request->password);
         } else {
             unset($data['password']);
         }
-        $data['profile_photo']=ImageController::update_user_image($request,$doctor);
-       
+        $data['profile_photo'] = ImageController::update_user_image($request, $doctor);
 
 
         $doctor->update($data);

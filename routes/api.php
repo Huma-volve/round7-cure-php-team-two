@@ -62,7 +62,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('doctor/bookings', [BookingController::class, 'doctorBookings']);
     Route::get('patient/bookings', [BookingController::class, 'patientBookings']);
 
-      Route::get('conversations', [ConversationController::class, 'index']);
+    Route::get('conversations', [ConversationController::class, 'index']);
     Route::get('conversations/{conversation}', [ConversationController::class, 'show']);
     // Route::post('conversations/{conversation}/participants', [ConversationController::class, 'addParticipant']);
     // Route::delete('conversations/{conversation}/participants', [ConversationController::class, 'removeParticipant']);
