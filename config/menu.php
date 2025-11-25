@@ -32,6 +32,39 @@ return [
         'role' => 'admin',
     ],
     [
+        'route' => 'admin-dashboard',
+        'label' => 'Admin Dashboard',
+        'icon' => 'ri ri-home-smile-line',
+        'role' => 'admin',
+        'children' => [
+            [
+                'route' => 'bookings.index',
+                'label' => 'Bookings',
+                'icon' => 'ri ri-calendar-2-line',
+                'permission' => 'view-bookings',
+                'badge' => ['text' => '3', 'class' => 'badge bg-label-danger rounded-pill ms-2']
+            ]
+        ]
+    ],
+    [
+        'route' => 'doctor-dashboard',
+        'label' => 'Doctor Dashboard',
+        'icon' => 'ri ri-home-smile-line',
+        'role' => 'doctor',
+        'children' => [
+            [
+                'route' => 'doctor.bookings',
+                'label' => 'Doctor Bookings',
+                'icon' => 'ri ri-calendar-2-line',
+                'permission' => 'view-bookings',
+                'badge' => ['text' => '3', 'class' => 'badge bg-label-danger rounded-pill ms-2']
+            ],
+        ]
+    ],
+
+
+
+    [
         'route' => 'doctors.index',
         'label' => 'Doctors',
         'icon' => 'ri ri-user-3-line',

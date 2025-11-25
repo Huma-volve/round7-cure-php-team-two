@@ -67,6 +67,9 @@ Route::middleware(['auth', 'role-check'])->get('/', function () {
     return "hello patient";
 })->name('dashboard');
 
+Route::get('/', function () {
+    return redirect()->route('login');
+})->middleware('guest');
 
 
 Route::middleware('auth')->prefix('/dashboard')->group(function () {
