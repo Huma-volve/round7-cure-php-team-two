@@ -7,16 +7,26 @@ use App\Http\Requests\StoreReviewRequest;
 use App\Models\Review;
 use App\Notifications\Doctors\ReviewNotification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ReviewController extends Controller
 {
     //
-   public function store(StoreReviewRequest $request)
+  public function store(StoreReviewRequest $request)
 {
-    $review = Review::create([
-        'patient_id' => $request->user()->id,
-        ...$request->only(['doctor_id', 'rating', 'comment']),
-    ]);
+    $patient = Auth::user()->patient;
+
+    if (!$patient) {
+        return response()->json([
+            'message' => 'This user is not registered as a patient.'
+        ], 422);
+    }
+
+    $validated = $request->validated();
+
+    $validated['patient_id'] = $patient->id;
+
+    $review = Review::create($validated);
 
     $review->doctor->notify(new ReviewNotification($review));
 
@@ -25,5 +35,4 @@ class ReviewController extends Controller
         'review' => $review,
     ]);
 }
-
 }
