@@ -28,7 +28,9 @@ public function run()
         'edit_helper',
         'delete_helper',
         'reschedule booking',
-        'cancel booking'
+        'cancel booking',
+        'view bookings',
+        'show-booking-details',
     ];
 
     foreach ($permissions as $permission) {
@@ -47,6 +49,6 @@ public function run()
     $patient=Role::where('name','patient')->first();
     $patient->givePermissionTo(['reschedule booking','cancel booking']);
     $doctor=Role::where('name','doctor')->first();
-    $doctor->givePermissionTo(['cancel booking']);
+    $doctor->givePermissionTo(['view bookings','cancel booking','show-booking-details']);
 }
 }

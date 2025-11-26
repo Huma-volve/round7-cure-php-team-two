@@ -20,35 +20,35 @@ return [
     */
 
     [
-        'route' => 'dashboard',
-        'label' => 'Dashboards',
+        'route' => 'doctor.dashboard',
+        'label' => 'doctor Dashboard',
         'icon' => 'ri ri-home-smile-line',
+        'role' => 'doctor',
+    ],
+    [
+        'route' => 'admin.dashboard',
+        'label' => 'Admin Dashboard',
+        'icon' => 'ri ri-home-smile-line',
+        'role' => 'admin',
     ],
     [
         'route' => 'doctors.index',
         'label' => 'Doctors',
         'icon' => 'ri ri-user-3-line',
-        'permission' => 'view-doctors',
+        'role' => 'admin',
         'children' => [
             [
-                'route' => 'doctors.index',
+                'route' => 'admin.doctor.index',
                 'label' => 'All Doctors',
-                'permission' => 'view-doctors',
                 'icon' => 'ri ri-user-3-line',
+                'role' => 'admin'
 
             ],
             [
-                'route' => 'doctors.create',
+                'route' => 'admin.doctor.add-page',
                 'label' => 'Create Doctor',
-                'permission' => 'create-doctor',
                 'icon' => 'ri ri-user-3-line',
-
-            ],
-            [
-                'route' => 'specialties.index',
-                'label' => 'Specialties',
-                'permission' => 'view-specialties',
-                'icon' => 'ri ri-user-3-line',
+                'role' => 'admin'
 
             ],
 
@@ -59,57 +59,56 @@ return [
         'route' => 'bookings.index',
         'label' => 'Bookings',
         'icon' => 'ri ri-calendar-2-line',
-        'permission' => 'view-bookings',
-        'badge' => ['text' => '3', 'class' => 'badge bg-label-danger rounded-pill ms-2']
+        'role' => 'admin',
+        //'badge' => ['text' => '3', 'class' => 'badge bg-label-danger rounded-pill ms-2']
+    ],
+    [
+        'route' => 'doctor.bookings.index',
+        'label' => 'Bookings',
+        'icon' => 'ri ri-calendar-2-line',
+        'role' => 'doctor',
+        //'badge' => ['text' => '3', 'class' => 'badge bg-label-danger rounded-pill ms-2']
+    ],
+    [
+        'route' => 'doctor.available-time',
+        'label' => 'All Available Times',
+        'icon' => 'ri ri-alarm-line',
+        'role' => 'doctor'
+
     ],
     [
         'route' => 'questions.index',
         'label' => 'Questions',
         'icon' => 'ri ri-question-line',
-        'permission' => 'view-bookings',
-        // 'badge' => ['text' => '3', 'class' => 'badge bg-label-danger rounded-pill ms-2']
-    ],
-    [
-        'route' => 'settings.index',
-        'label' => 'Settings',
-        'icon' => 'ri ri-settings-4-line',
-        'permission' => 'view-bookings',
-        // 'badge' => ['text' => '3', 'class' => 'badge bg-label-danger rounded-pill ms-2']
-    ],
-
-
-    /*
-    [
-        'route' => 'reviews.index',
-        'label' => 'Reviews',
-        'icon' => 'ri ri-star-line',
-        'permission' => 'view-reviews',
-    ],
-
-    [
-        'route' => 'users.index',
-        'label' => 'Users',
-        'icon' => 'ri ri-group-line',
-        'role' => 'admin', // only admin can see
+        'role' => 'admin',
         'children' => [
             [
-                'route' => 'users.index',
-                'label' => 'All Users',
-                'permission' => 'view-users',
+                'route' => 'questions.index',
+                'label' => 'All Questions',
+                'icon' => 'ri ri-question-line',
+                'role' => 'admin'
+
             ],
             [
-                'route' => 'admin.broadcast',
-                'label' => 'Broadcast',
-                'permission' => 'send-admin-broadcast',
-            ],
-        ],
-    ],
+                'route' => 'questions.create',
+                'label' => 'Create Question',
+                'icon' => 'ri ri-question-line',
+                'role' => 'admin'
 
+            ],
+
+        ],
+
+        // 'badge' => ['text' => '3', 'class' => 'badge bg-label-danger rounded-pill ms-2']
+    ],
     [
         'route' => 'settings.index',
         'label' => 'Settings',
         'icon' => 'ri ri-settings-4-line',
-        'role' => 'admin',
-    ],
-*/
+        'role' => 'admin'
+        // 'badge' => ['text' => '3', 'class' => 'badge bg-label-danger rounded-pill ms-2']
+    ]
+
+
+
 ];
