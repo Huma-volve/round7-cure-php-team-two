@@ -68,8 +68,8 @@
                             <p class="card-text">{{$text}}</p>
                           </div>
                           <div class="card-body">
-                            <h5 class="card-title">Paid Amount</h5>
-                            <p class="card-text">{{ $booking->total}}</p>
+                            <h5 class="card-title">Doctor Amount</h5>
+                            <p class="card-text">{{ $booking->doctor_amount}}</p>
                           </div>
                         </div>
                       </div>

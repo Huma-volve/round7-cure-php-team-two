@@ -23,7 +23,9 @@ class BookingsTableSeeder extends Seeder
         $settings = DB::table('settings')->first();
         $doctors = DB::table('doctors')->pluck('session_price', 'id');
         $doctorId = array_rand($doctors->toArray());
-        $doctorAmount = $doctors[$doctorId];
+        $total = $doctors[$doctorId];
+        $rate = $total * ($settings->rate ?? 20)/100;
+        $doctorAmount = $total - $rate;
 
 
         $bookings = [];
@@ -45,8 +47,8 @@ class BookingsTableSeeder extends Seeder
                 'payment_status' => $paymentStatuses[array_rand($paymentStatuses)],
 
                 'doctor_amount' =>$doctorAmount,
-                'rate' => $settings->rate ?? 20,
-                'total' => $doctorAmount + ($settings->rate ?? 20),
+                'rate' => $rate,
+                'total' => $total,
 
                 'payment_time' => rand(0, 1) ? $date->addHours(rand(1, 5))->toDateTimeString() : null,
 

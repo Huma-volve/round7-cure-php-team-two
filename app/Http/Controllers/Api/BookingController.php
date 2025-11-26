@@ -31,9 +31,10 @@ class BookingController extends Controller
 
         $patient = Auth::user()->patient;
         $doctor=Doctor::find($validated['doctor_id']);
-        $doctorAmount=$doctor->session_price;
+        $total=$doctor->session_price;
         $settings=Setting::first();
-        $rate=$settings->rate ?? 20;
+        $rate = $total * ($settings->rate ?? 20)/100;
+        $doctorAmount = $total - $rate;
 
 
         $booking = Booking::create(array_merge(
@@ -42,7 +43,7 @@ class BookingController extends Controller
                 'patient_id' => $patient->id,
                 'doctor_amount'=>$doctorAmount,
                 'rate'=>$rate,
-                'total'=>$doctorAmount + $rate,
+                'total'=>$total,
             ]
         ));
 
