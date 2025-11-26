@@ -18,7 +18,7 @@ class checkRole
         if($request->user()->hasRole('doctor')){
               return  redirect()->route('doctor-dashboard');
         }
-        elseif($request->user()->hasRole('admin')){
+        elseif($request->user()->hasRole('admin')||$request->user()->hasRole('helper')){
             return  redirect()->route('admin-dashboard');
         }
         return $next($request);

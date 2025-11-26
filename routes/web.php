@@ -102,6 +102,23 @@ Route::middleware('auth')->prefix('/dashboard')->group(function () {
 
 
 
+Route::middleware('auth')->prefix('/dashboard')->group(
+   function()
+   {
+      Route::get('/doctor',[DoctorController::class,'index'])->middleware('role:doctor')
+          ->name('doctor-dashboard');
+
+      Route::get('/admin',function()
+      {
+
+          return view('dashboard.Admin.index');
+
+
+      })->middleware('role:admin|helper')->name('admin-dashboard');
+   }
+);
+
+
 
 
 require __DIR__ . '/auth.php';

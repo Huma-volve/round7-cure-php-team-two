@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 
 use App\Http\Controllers\Files\FileController;
 use App\Http\Requests\User\StoreUserRequest;
+use App\Http\Requests\User\UpdatePasswordRequest;
 use App\Http\Requests\User\UpdateUserRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
@@ -76,7 +77,7 @@ class UserController extends Controller
     }
 
 
-    public function update(UpdateUserRequest $request,$user=null)
+    public  function update(UpdateUserRequest $request,$user=null)
     {
         if($user==null){$user = auth()->user();}
 
@@ -101,6 +102,7 @@ class UserController extends Controller
 
     public function destroy($user=null)
     {
+
         if($user==null){$user = auth()->user();}
 
         $this->authorize('delete', $user);
@@ -108,5 +110,13 @@ class UserController extends Controller
         FileController::deleteFile($user->image,'images/users');
         PersonalAccessToken::where('tokenable_id', $user->id)->delete();//to delete all the tokens for the user
         return response()->json(['data'=>null,'message'=>'user deleted successfully'], 200);
+    }
+    public static function updatePassword(UpdatePasswordRequest $request)
+    {
+         $user=User::where('email','=',$request->email)->first();
+
+         $user->password=Hash::make($request->password);
+         $user->save();
+        return $user;
     }
 }
