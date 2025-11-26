@@ -31,6 +31,34 @@
                         <!-- Content -->
                          <!-- Striped Rows -->
               <div class="card">
+                <!--search form-->
+                <div class="col-md">  <!-- half width on desktop -->
+                    <div class="card">
+                        <h5 class="card-header">Search</h5>
+                        <div class="card-body">
+
+                            <form action="{{ route('doctor.bookings.index') }}" method="GET" class="p-0 m-0">
+                                <div class="form-floating form-floating-outline">
+
+                                    <input
+                                        type="search"
+                                        name="search"
+                                        class="form-control search-small"
+                                        id="floatingInput"
+                                        placeholder="John Doe"
+                                    />
+
+                                    <div id="floatingInputHelp" class="form-text">
+                                        Search by Patient Name
+                                    </div>
+
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+                <!--search form-->
                 <h5 class="card-header">Bookings</h5>
                 <div class="table-responsive text-nowrap">
                   <table class="table table-striped">

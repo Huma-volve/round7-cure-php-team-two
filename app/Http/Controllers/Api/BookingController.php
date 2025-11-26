@@ -14,9 +14,23 @@ use App\Models\Setting;
 class BookingController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
-        $bookings = Booking::with('patient.user', 'doctor.user')->orderBy('booking_date', 'desc')->paginate(10);
+        if(isset($request->search)){
+            $bookings = Booking::with('patient.user', 'doctor.user')
+                ->whereHas('patient.user', function ($query) use ($request) {
+                    $query->where('name', 'like', '%' . $request->search . '%');
+                })
+                ->orWhereHas('doctor.user', function ($query) use ($request) {
+                    $query->where('name', 'like', '%' . $request->search . '%');
+                })
+                ->orderBy('booking_date', 'desc')
+                ->orderBy('booking_time', 'desc')
+                ->paginate(10);
+
+            return view('dashboard.bookings.admin.index', compact('bookings'));
+        }
+        $bookings = Booking::with('patient.user', 'doctor.user')->orderBy('booking_date', 'desc')->orderBy('booking_time', 'desc')->paginate(10);
         return view('dashboard.bookings.admin.index', compact('bookings'));
     }
 
@@ -112,8 +126,20 @@ class BookingController extends Controller
         return response()->json(['message' => "Patient bookings fetched successfully", 'data' => $bookings], 200);
     }
 
-    public function doctorBookings()
+    public function doctorBookings(Request $request)
     {
+        if(isset($request->search)){
+            $bookings = Auth::user()->doctor->bookings()->where('status', '!=', 'Cancelled')
+            ->with('patient.user')
+                ->whereHas('patient.user', function ($query) use ($request) {
+                    $query->where('name', 'like', '%' . $request->search . '%');
+                })
+                ->orderBy('booking_date', 'desc')
+                ->orderBy('booking_time', 'desc')
+                ->paginate(10);
+
+            return view('dashboard.bookings.doctor.index', compact('bookings'));
+        }
         $bookings = Auth::user()->doctor->bookings()->where('status', '!=', 'Cancelled')
             ->with('patient.user')
             ->orderBy('booking_date')
