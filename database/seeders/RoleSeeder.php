@@ -23,6 +23,7 @@ public function run()
         'delete users',
         'edit users',
         'create users',
+        'make booking',
         'reschedule booking',
         'cancel booking',
         'view bookings',
@@ -38,10 +39,10 @@ public function run()
 
     // 3️⃣ Assign Permissions to Admin
     $admin = Role::where('name', 'admin')->first();
-    $admin->givePermissionTo($permissions);
+    $admin->givePermissionTo('delete users','edit users','create users','view bookings','show-booking-details');
     // Assign Permissions to Patient and Doctor
     $patient=Role::where('name','patient')->first();
-    $patient->givePermissionTo(['reschedule booking','cancel booking']);
+    $patient->givePermissionTo(['view bookings','make booking','reschedule booking','cancel booking']);
     $doctor=Role::where('name','doctor')->first();
     $doctor->givePermissionTo(['view bookings','cancel booking','show-booking-details']);
 }

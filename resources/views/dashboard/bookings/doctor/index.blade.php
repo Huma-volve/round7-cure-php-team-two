@@ -36,6 +36,7 @@
                   <table class="table table-striped">
                     <thead>
                       <tr>
+                        <th>#ID</th>
                         <th>Patient Name</th>
                         <th>Date</th>
                         <th>Time</th>
@@ -45,8 +46,9 @@
                       </tr>
                     </thead>
                     <tbody class="table-border-bottom-0">
-                        @foreach ($bookings as $booking )
+                        @foreach ($bookings as $index=>$booking )
                       <tr>
+                        <td>{{ $index+1 }}</td>
                         <td>
                             <div class="avatar avatar-online">
                                 <img src={{$booking->patient->user->profile_photo}} alt="avatar" class="rounded-circle" />
@@ -58,7 +60,7 @@
                         <td>
                           <span class="badge rounded-pill bg-label-primary me-1">{{ $booking->status }}</span>
                         </td>
-                        <td>{{ $booking->doctor->session_price }}</td>
+                        <td>{{ $booking->total }}</td>
                         <td>
                           <div class="dropdown">
                             <button
@@ -68,7 +70,7 @@
                               <i class="icon-base ri ri-more-2-line icon-18px"></i>
                             </button>
                             <div class="dropdown-menu">
-                              <a class="dropdown-item" href="{{ route('bookings.show', $booking->id) }}">
+                              <a class="dropdown-item" href="{{ route('doctor.bookings.show', $booking->id) }}">
                                 <i class="icon-base ri ri-pencil-line icon-18px me-1"></i>
                                 View Booking</a
                               >
@@ -89,6 +91,7 @@
                   </table>
                 </div>
               </div>
+              {{ $bookings->links() }}
               <!--/ Striped Rows -->
 
             {{-- / Layout page --}}

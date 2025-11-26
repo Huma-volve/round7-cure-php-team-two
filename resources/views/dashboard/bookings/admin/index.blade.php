@@ -36,6 +36,7 @@
                   <table class="table table-striped">
                     <thead>
                       <tr>
+                        <th>#ID</th>
                         <th>Patient Name</th>
                         <th>Doctor Name</th>
                         <th>Date</th>
@@ -46,8 +47,9 @@
                       </tr>
                     </thead>
                     <tbody class="table-border-bottom-0">
-                        @foreach ($bookings as $booking )
+                        @foreach ($bookings as $index=>$booking )
                       <tr>
+                        <td>{{ $index+1 }}</td>
                         <td>
                             <div class="avatar avatar-online">
                                 <img src={{$booking->patient->user->profile_photo}} alt="avatar" class="rounded-circle" />
@@ -65,7 +67,7 @@
                         <td>
                           <span class="badge rounded-pill bg-label-primary me-1">{{ $booking->status }}</span>
                         </td>
-                        <td>{{ $booking->doctor->session_price }}</td>
+                        <td>{{ $booking->total}}</td>
                         <td>
                           <div class="dropdown">
                             <button
@@ -88,6 +90,7 @@
                   </table>
                 </div>
               </div>
+              {{ $bookings->links() }}
               <!--/ Striped Rows -->
 
             {{-- / Layout page --}}

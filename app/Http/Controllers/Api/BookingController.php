@@ -8,19 +8,15 @@ use App\Models\Booking;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\Booking\StoreRequest;
 use App\Http\Requests\Booking\UpdateRequest;
+use App\Models\Doctor;
+use App\Models\Setting;
 
 class BookingController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('permission:make booking', ['only' => ['store']]);
-        $this->middleware('permission:reschedule booking', ['only' => ['reschedule']]);
-        //$this->middleware('permission:cancel booking', ['only' => ['cancel']]);
-    }
 
     public function index()
     {
-        $bookings = Booking::with('patient.user', 'doctor.user')->orderBy('booking_date', 'desc')->get();
+        $bookings = Booking::with('patient.user', 'doctor.user')->orderBy('booking_date', 'desc')->paginate(10);
         return view('dashboard.bookings.admin.index', compact('bookings'));
     }
 
@@ -34,10 +30,20 @@ class BookingController extends Controller
         $validated = $request->validated();
 
         $patient = Auth::user()->patient;
+        $doctor=Doctor::find($validated['doctor_id']);
+        $doctorAmount=$doctor->session_price;
+        $settings=Setting::first();
+        $rate=$settings->rate ?? 20;
+
 
         $booking = Booking::create(array_merge(
             $validated,
-            ['patient_id' => $patient->id]
+            [
+                'patient_id' => $patient->id,
+                'doctor_amount'=>$doctorAmount,
+                'rate'=>$rate,
+                'total'=>$doctorAmount + $rate,
+            ]
         ));
 
         return response()->json([
@@ -111,7 +117,7 @@ class BookingController extends Controller
             ->with('patient.user')
             ->orderBy('booking_date')
             ->orderBy('booking_time')
-            ->get();
+            ->paginate(10);
 
         return view('dashboard.bookings.doctor.index', compact('bookings'));
     }
