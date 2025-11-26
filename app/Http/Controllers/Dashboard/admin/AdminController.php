@@ -18,7 +18,7 @@ use Illuminate\Http\Request;
 use App\Services\Reports\AnalyticsService;
 
 
-class AdminController extends UserController
+class AdminController extends Controller
 {
     public function index(Request $request, AnalyticsService $analytics)
     {
@@ -65,10 +65,10 @@ class AdminController extends UserController
             unset($data['password']);
         }
 
-<<<<<<< HEAD
+
 
         $data['profile_photo']=ImageController::update_user_image($request,$user);
-=======
+
         //        if (!$request->hasFile('image') && $request->input('remove_image') == 1) {
 //            FileController::deleteFile($user->profile_photo, 'images/users');
 //            $data['profile_photo'] = null;
@@ -79,7 +79,7 @@ class AdminController extends UserController
 //            $data['profile_photo'] = $image;
 //        }
         $data['profile_photo'] = ImageController::update_user_image($request, $user);
->>>>>>> 38d96f5fd5363c44575f7a70cdacac0648585cb2
+
 
         $user->update($data);
         $doctor->update($request->only(['specialty_id', 'license_number', 'session_price']));
@@ -112,7 +112,7 @@ class AdminController extends UserController
             'session_price' => 'required|numeric|min:0',
         ]);
 
-<<<<<<< HEAD
+
    $user=UserController::store($request);
    $doctor= $user->doctor()->create($data);
    $user->assignRole('doctor');
@@ -151,13 +151,12 @@ public function DestroyHelper(User $helper)
      HelperController::DeleteHelper($helper);
     return redirect()->route('admin.helper.index');
 }
-=======
-        $user = UserController::store($request);
-        $doctor = $user->doctor()->create($data);
-        $user->assignRole('doctor');
-        return redirect()->route('admin.doctor.index');
 
-    }
->>>>>>> 38d96f5fd5363c44575f7a70cdacac0648585cb2
+//        $user = UserController::store($request);
+//        $doctor = $user->doctor()->create($data);
+//        $user->assignRole('doctor');
+//        return redirect()->route('admin.doctor.index');
+//
+//    }
 
 }

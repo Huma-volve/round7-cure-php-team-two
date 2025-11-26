@@ -37,7 +37,7 @@ class AuthenticatedSessionController extends Controller
 
         if ($user->hasRole('admin'))
         {
-            return redirect()->route('admin.dashboard');
+            return redirect()->route('admin-dashboard');
 
         }
 
