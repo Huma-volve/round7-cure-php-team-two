@@ -10,5 +10,6 @@ class Setting extends Model
         'phone',
         'email',
         'logo',
+        'rate'
     ];
 }

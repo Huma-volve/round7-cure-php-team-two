@@ -13,8 +13,8 @@ class QuestionController extends Controller
      */
     public function index()
     {
-       $questions = Question::orderBy('created_at', 'desc')->paginate(5);
-       return view('Dashboard.questions.index', compact('questions'));
+        $questions = Question::orderBy('created_at', 'desc')->paginate(5);
+        return view('dashboard.questions.index', compact('questions'));
     }
 
     /**
@@ -22,7 +22,7 @@ class QuestionController extends Controller
      */
     public function create()
     {
-          return view('Dashboard.questions.create');
+        return view('dashboard.questions.create');
     }
 
     /**
@@ -33,16 +33,16 @@ class QuestionController extends Controller
         // dd($request->all());
         $request->validate([
             'question' => 'required|string|max:255',
-            'answer'   => 'required|string|max:255',
-            'is_active'=> 'required|boolean',
+            'answer' => 'required|string|max:255',
+            'is_active' => 'required|boolean',
         ]);
 
         Question::create([
-            'question'  => $request->question,
-            'answer'    => $request->answer,
+            'question' => $request->question,
+            'answer' => $request->answer,
             'is_active' => $request->is_active,
         ]);
-        
+
 
         return redirect()->route('questions.index')->with('success', 'Data created successfully');
     }
@@ -60,8 +60,8 @@ class QuestionController extends Controller
      */
     public function edit($id)
     {
-        $questions=Question::findOrFail($id);
-        return view('Dashboard.questions.edit',compact('questions'));
+        $questions = Question::findOrFail($id);
+        return view('dashboard.questions.edit', compact('questions'));
     }
 
     /**
@@ -71,16 +71,16 @@ class QuestionController extends Controller
     {
         $request->validate([
             'question' => 'required|string|max:255',
-            'answer'   => 'required|string|max:255',
-            'is_active'=> 'required|boolean',
+            'answer' => 'required|string|max:255',
+            'is_active' => 'required|boolean',
         ]);
 
         $question->update([
-            'question'  => $request->question,
-            'answer'    => $request->answer,
+            'question' => $request->question,
+            'answer' => $request->answer,
             'is_active' => $request->is_active,
         ]);
-        if(!$question){
+        if (!$question) {
             return redirect()->route('questions.index')->with('error', 'Something went wrong, please try again.');
         }
 

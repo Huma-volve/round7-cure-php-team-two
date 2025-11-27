@@ -37,7 +37,7 @@ return [
 */
 
 'custom' => [
-// 👇 ضيف الرسايل بتاعتك هنا بالظبط
+
 
     'name.required' => 'The name field is required.',
     'name.max' => 'The name must not exceed 255 characters.',

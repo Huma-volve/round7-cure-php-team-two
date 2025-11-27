@@ -5,14 +5,14 @@
                  &#169;
                  <script>
                      document.write(new Date().getFullYear());
-                 </script>, made with ❤️ by <a href="https://themeselection.com" target="_blank"
-                     class="footer-link fw-medium">ThemeSelection</a>
+                 </script>, made with ❤️ by <a href="https://huma-volve.com/company-profile" target="_blank"
+                     class="footer-link fw-medium">Huma-volve </a>
              </div>
              <div class="d-none d-lg-inline-block">
-                 <a href="#" class="footer-link me-4">Admin Templates</a>
-                 <a href="#" class="footer-link me-4">License</a>
-                 <a href="#" class="footer-link me-4">Bootstrap Templates</a>
-                 <a href="#" class="footer-link me-4">Documentation</a>
+{{--                 <a href="#" class="footer-link me-4">Admin Templates</a>--}}
+{{--                 <a href="#" class="footer-link me-4">License</a>--}}
+{{--                 <a href="#" class="footer-link me-4">Bootstrap Templates</a>--}}
+{{--                 <a href="#" class="footer-link me-4">Documentation</a>--}}
              </div>
          </div>
      </div>

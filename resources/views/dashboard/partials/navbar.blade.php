@@ -26,7 +26,9 @@
             <li class="nav-item navbar-dropdown dropdown-user dropdown">
                 <a class="nav-link dropdown-toggle hide-arrow p-0" href="javascript:void(0);" data-bs-toggle="dropdown">
                     <div class="avatar avatar-online">
-                        <img src="{{ asset('assets/img/avatars/1.png') }}" alt="avatar" class="rounded-circle" />
+                        <img src="{{ asset('storage/images/users/' . auth()->user()->profile_photo) }}" alt="avatar"
+                            class="rounded-circle" />
+
                     </div>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">
@@ -35,8 +37,8 @@
                             <div class="d-flex">
                                 <div class="flex-shrink-0 me-3">
                                     <div class="avatar avatar-online">
-                                        <img src="{{ asset('assets/img/avatars/1.png') }}" alt="avatar"
-                                            class="w-px-40 h-auto rounded-circle" />
+                                        <img src="{{ asset('storage/images/users/' . auth()->user()->profile_photo) }}"
+                                            alt="avatar" class="w-px-40 h-auto rounded-circle" />
                                     </div>
                                 </div>
                                 <div class="flex-grow-1">
@@ -49,6 +51,7 @@
                     <li>
                         <div class="dropdown-divider my-1"></div>
                     </li>
+<<<<<<< HEAD
                     <li><a class="dropdown-item" href="#"><i
                                 class="icon-base ri ri-user-line icon-md me-3"></i><span>My Profile</span></a></li>
                     <li><a class="dropdown-item" href="#"><i
@@ -68,7 +71,39 @@
                         </div>
                     </li>
                 </ul>
+=======
+                    @role('doctor')
+                        <li><a class="dropdown-item" href="{{ route('doctor.profile') }}"><i
+                                    class="icon-base ri ri-user-line icon-md me-3"></i><span>My Profile</span></a></li>
+
+                        <li>
+                            <div class="dropdown-divider my-1"></div>
+                        <li></li>
+                    @endrole
+                    @role('admin')
+                        <li><a class="dropdown-item" href="{{ route('settings.index') }}"><i
+                                    class="icon-base ri ri-settings-4-line icon-md me-3"></i><span>Settings</span></a>
+                        </li>
+                        <li>
+                            <div class="dropdown-divider my-1"></div>
+                        <li></li>
+                    @endrole
+
+                    <div class="d-grid px-4 pt-2 pb-1">
+                        <a class="btn btn-danger d-flex" href="javascript:void(0);"
+                            onclick="event.preventDefault();document.getElementById('logout-form').submit();">
+                            <small class="align-middle">Logout</small>
+                            <i class="ri ri-logout-box-r-line ms-2 ri-xs"></i>
+                        </a>
+                    </div>
+>>>>>>> a7f7cb2890d98b05b1041b9018dfecaeb743a111
             </li>
+        </ul>
+        </li>
         </ul>
     </div>
 </nav>
+
+<form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+    @csrf
+</form>
