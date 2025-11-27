@@ -51,9 +51,7 @@ Route::resource('questions', QuestionController::class)->names([
 Route::get('settings', [SettingController::class, 'index'])->name('settings.index');
 Route::put('settings/update/', [SettingController::class, 'update'])->name('settings.update');
 
-Route::get('/', function () {
-    return redirect()->route('login');
-})->middleware('guest');
+
 
 
 Route::middleware(['auth', 'can:isDoctor'])->prefix('doctor')->name('doctor.')->group(function () {
