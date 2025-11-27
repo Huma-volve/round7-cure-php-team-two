@@ -32,12 +32,12 @@ class AuthenticatedSessionController extends Controller
             return redirect()->route('doctor.dashboard');
         }
 
-        if($user->hasRole('admin')||$user->hasRole('helper')){
-            return redirect()->route('admin-dashboard');}
+        if ($user->hasRole('admin') || $user->hasRole('helper')) {
+            return redirect()->route('admin.dashboard');
+        }
 
-        if ($user->hasRole('admin'))
-        {
-            return redirect()->route('admin-dashboard');
+        if ($user->hasRole('admin')) {
+            return redirect()->route('admin.dashboard');
 
         }
 
