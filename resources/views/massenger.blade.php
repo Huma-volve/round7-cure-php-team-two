@@ -135,7 +135,8 @@
                         <a href="#" class="nav-link p-0 mt-lg-2" data-bs-toggle="modal"
                             data-bs-target="#modal-profile">
                             <div class="avatar avatar-online mx-auto d-none d-xl-block">
-                                <img class="avatar-img" src="{{ url(Auth::user()->profile_photo) }}" alt="">
+                                <img class="avatar-img" src="{{ asset(Auth::user()->profile_photo) }}"
+                                    alt="">
                             </div>
                             <div class="avatar avatar-online avatar-xs d-xl-none">
                                 <img class="avatar-img" src="assets/img/avatars/1.jpg" alt="">
@@ -425,7 +426,7 @@
 
                             <div class="profile-body">
                                 <div class="avatar avatar-xl">
-                                    <img class="avatar-img" src="{{ url(Auth::user()->profile_photo) }}"
+                                    <img class="avatar-img" src="{{ asset(Auth::user()->profile_photo) }}"
                                         alt="#">
                                 </div>
                                 <h4 class="mb-1">{{ Auth::user()->name }}</h4>

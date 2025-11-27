@@ -55,7 +55,7 @@ Route::put('settings/update/', [SettingController::class, 'update'])->name('sett
 
 
 
-Route::middleware(['auth', 'can:isDoctor'])->prefix('doctor')->name('doctor.')->group(function () {
+Route::middleware(['auth', 'role:doctor'])->prefix('doctor')->name('doctor.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     //Route::get('/patients', [DashboardController::class, 'patients'])->name('patients.index');
     //Route::get('/patients/{patient}', [DashboardController::class, 'showPatient'])->name('patients.show');
@@ -86,9 +86,9 @@ Route::middleware('auth')->prefix('/dashboard')->group(function () {
 
     //admin panel
     Route::middleware('role:admin')->prefix('/admin')->group(function () {
-             Route::get('/', function () {
-                return view('dashboard.Admin.index');
-            })->name('admin-dashboard');
+        Route::get('/', function () {
+            return view('dashboard.Admin.index');
+        })->name('admin-dashboard');
 
         //admin bookings page
         Route::get('/bookings', [BookingController::class, 'index'])->name('bookings.index');
@@ -102,19 +102,17 @@ Route::middleware('auth')->prefix('/dashboard')->group(function () {
 
 
 Route::middleware('auth')->prefix('/dashboard')->group(
-   function()
-   {
-      Route::get('/doctor',[DoctorController::class,'index'])->middleware('role:doctor')
-          ->name('doctor-dashboard');
+    function () {
+        Route::get('/doctor', [DoctorController::class, 'index'])->middleware('role:doctor')
+            ->name('doctor-dashboard');
 
-      Route::get('/admin',function()
-      {
+        Route::get('/admin', function () {
 
-          return view('dashboard.Admin.index');
+            return view('dashboard.Admin.index');
 
 
-      })->middleware('role:admin|helper')->name('admin.dashboard');
-   }
+        })->middleware('role:admin|helper')->name('admin.dashboard');
+    }
 );
 
 
@@ -124,5 +122,5 @@ require __DIR__ . '/auth.php';
 require __DIR__ . '/doctor.php';
 require __DIR__ . '/admin.php';
 Route::get('dashboard/{id?}', [ChatController::class, 'index'])
-  ->middleware('auth')
-   ->name('messenger');
+    ->middleware('auth')
+    ->name('messenger');
