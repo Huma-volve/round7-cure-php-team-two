@@ -13,6 +13,7 @@ class ConversationController extends Controller
 {
     public function index()
     {
+        // dd('yasmina');
         $user = Auth::user();
         return $user->conversations()->with([
             'lastMessage',
