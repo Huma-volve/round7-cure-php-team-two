@@ -11,16 +11,22 @@ class availableTimeController extends Controller
 {
  private const REDIRECTED_ROUTE='doctor.available-time';
 
-//public static function show()
-//{
+// public static function show()
+// {
 //    $doctor=self::doctor();
 //    return view('dashboard.doctor');
+
+// }
+// public static function show(){
+    // return DoctorController::doctor()->available_slots;
+
 //}
 public  function show(){
 
     $available_time= DoctorController::doctor()->available_slots;
     if(!is_array($available_time)){return json_decode($available_time);}
     return $available_time;
+
 }
 public  function view(){
     $availableTimes=self::show();

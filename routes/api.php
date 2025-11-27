@@ -17,6 +17,7 @@ use App\Http\Controllers\Api\SessionFeedbackController;
 use App\Http\Controllers\Api\StripeController;
 use App\Http\Controllers\Api\ConversationController;
 use App\Http\Controllers\Api\MessageController;
+use App\Http\Controllers\Dashboard\ChatController;
 
 
 // Auth routes
@@ -49,7 +50,7 @@ Route::prefix('users')->controller(UserController::class)->group(function () {
 });
 
 // 🧾 Authenticated routes
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['auth:sanctum','throttle:api'])->group(function () {
     // Booking routes
     Route::post('bookings', [BookingController::class, 'store']);
     Route::get('bookings/{booking}', [BookingController::class, 'show']);
