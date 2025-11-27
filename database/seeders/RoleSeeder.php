@@ -9,7 +9,7 @@ class RoleSeeder extends Seeder
 public function run()
 {
     // 1️⃣ Create Roles
-    $roles = ['admin','doctor','patient'];
+    $roles = ['admin','doctor','patient','helper'];
 
     foreach ($roles as $role) {
         Role::firstOrCreate([
@@ -19,12 +19,19 @@ public function run()
     }
 
     // 2️⃣ Create Permissions
+
     $permissions = [
         'delete users',
         'edit users',
         'create users',
+        'make booking',
+        'create_helper',
+        'edit_helper',
+        'delete_helper',
         'reschedule booking',
-        'cancel booking'
+        'cancel booking',
+        'view bookings',
+        'show-booking-details',
     ];
 
     foreach ($permissions as $permission) {
@@ -36,11 +43,14 @@ public function run()
 
     // 3️⃣ Assign Permissions to Admin
     $admin = Role::where('name', 'admin')->first();
+
     $admin->givePermissionTo($permissions);
+    $helper=Role::where('name','helper')->first();
+    $helper->givePermissionTo([  'delete users', 'edit users', 'create users',]);
     // Assign Permissions to Patient and Doctor
     $patient=Role::where('name','patient')->first();
-    $patient->givePermissionTo(['reschedule booking','cancel booking']);
+    $patient->givePermissionTo(['view bookings','make booking','reschedule booking','cancel booking']);
     $doctor=Role::where('name','doctor')->first();
-    $doctor->givePermissionTo(['cancel booking']);
+    $doctor->givePermissionTo(['view bookings','cancel booking','show-booking-details']);
 }
 }

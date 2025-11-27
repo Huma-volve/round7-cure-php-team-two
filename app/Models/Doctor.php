@@ -7,11 +7,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Builder;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-
+use Illuminate\Notifications\Notifiable;
 
 class Doctor extends Model
 {
-    use SoftDeletes, HasRoles, HasFactory;
+    use SoftDeletes, HasRoles, HasFactory,Notifiable;
 
     protected $fillable = [
         'user_id',

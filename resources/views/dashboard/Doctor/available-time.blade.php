@@ -33,7 +33,7 @@
                             </thead>
                             <tbody>
 
-                            @forelse ($availableTimes as $timeString)
+                            @forelse ($availableTimes??[] as $timeString)
                                 @php
                                     $date = \Carbon\Carbon::parse($timeString);
                                 @endphp

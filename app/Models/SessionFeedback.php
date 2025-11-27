@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class SessionFeedback extends Model
 {
+    protected $table = 'session_feedbacks';
     use SoftDeletes;
 
     protected $fillable = [

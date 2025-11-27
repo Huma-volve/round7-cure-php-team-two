@@ -1,4 +1,4 @@
 <?php
 return [
-    'title' => 'Doctor booking',
+    'title' => 'Bookings',
 ];

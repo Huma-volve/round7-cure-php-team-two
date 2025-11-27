@@ -33,10 +33,10 @@ class StoreUserRequest extends FormRequest
                 ->numbers()
                 ->symbols()],
 
-            'latitude' => 'required|numeric|between:-90,90',
-            'longitude' => 'required|numeric|between:-180,180',
+            'latitude' => 'nullable|numeric|between:-90,90',
+            'longitude' => 'nullable|numeric|between:-180,180',
             'image'=>'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'phone_number'=>'required|unique:users,phone_number',
+            'phone_number'=>'required|unique:users',
 
         ];
     }
