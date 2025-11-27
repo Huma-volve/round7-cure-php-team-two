@@ -50,7 +50,7 @@ Route::middleware('auth')->prefix('dashboard')->group(
 
 require __DIR__.'/auth.php';
 require __DIR__.'/doctor.php';
-Route::get('/{id?}', [ChatController::class, 'index'])
+Route::get('dashboard/{id?}', [ChatController::class, 'index'])
   ->middleware('auth')
    ->name('messenger');
 

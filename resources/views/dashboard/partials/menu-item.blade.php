@@ -21,13 +21,18 @@
             @endforeach
         </ul>
     @else
-        <a href="{{ route($item['route']) }}" class="menu-link {{ $isActive ? 'active' : '' }}">
-            <i class="menu-icon icon-base {{ $item['icon'] }}"></i>
-            <div data-i18n="{{ $item['label'] }}">{{ $item['label'] }}</div>
-            @if (isset($item['badge']))
-                <div class="badge {{ $item['badge']['class'] }} rounded-pill ms-auto">{{ $item['badge']['text'] }}
-                </div>
-            @endif
-        </a>
+       <a href="{{ route($item['route']) }}"
+   class="menu-link {{ $isActive ? 'active' : '' }}"
+   @if($item['route'] === 'messenger') target="_blank" @endif>
+    <i class="menu-icon icon-base {{ $item['icon'] }}"></i>
+    <div data-i18n="{{ $item['label'] }}">{{ $item['label'] }}</div>
+
+    @if (isset($item['badge']))
+        <div class="badge {{ $item['badge']['class'] }} rounded-pill ms-auto">
+            {{ $item['badge']['text'] }}
+        </div>
+    @endif
+</a>
+
     @endif
 </li>

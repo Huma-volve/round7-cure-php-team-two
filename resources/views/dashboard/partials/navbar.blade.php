@@ -58,12 +58,12 @@
                     </li>
                     <li>
                         <div class="d-grid px-4 pt-2 pb-1">
-                            <a class="btn btn-danger d-flex" href=""
+                            <a class="btn btn-danger d-flex" href="#"
                                 onclick="event.preventDefault();document.getElementById('logout-form').submit();">
                                 <small class="align-middle">Logout</small>
                                 <i class="ri ri-logout-box-r-line ms-2 ri-xs"></i>
                             </a>
-                            <form id="logout-form" action="" method="POST" class="d-none">@csrf
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">@csrf
                             </form>
                         </div>
                     </li>

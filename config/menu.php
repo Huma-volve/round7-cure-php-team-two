@@ -70,6 +70,13 @@ return [
         // 'badge' => ['text' => '3', 'class' => 'badge bg-label-danger rounded-pill ms-2']
     ],
     [
+        'route' => 'messenger',
+        'label' => 'Chats',
+         'icon' => 'ri-chat-3-line',
+        'permission' => 'view-bookings',
+        // 'badge' => ['text' => '3', 'class' => 'badge bg-label-danger rounded-pill ms-2']
+    ],
+    [
         'route' => 'settings.index',
         'label' => 'Settings',
         'icon' => 'ri ri-settings-4-line',
