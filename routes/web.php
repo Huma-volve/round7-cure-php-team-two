@@ -4,6 +4,7 @@ use App\Http\Controllers\Dashboard\doctor\availableTimeController;
 use App\Http\Controllers\Dashboard\doctor\DoctorController;
 use App\Http\Controllers\Dashboard\QuestionController;
 use App\Http\Controllers\Dashboard\SettingController;
+use App\Http\Controllers\Dashboard\ChatController;
 //use App\Http\Controllers\Dashboard\DoctorController;
 use App\Http\Controllers\Dashboard\Doctor\DashboardController;
 use App\Http\Controllers\Api\BookingController;
@@ -46,7 +47,7 @@ Route::resource('questions', QuestionController::class)->names([
     'update' => 'questions.update',
     'destroy' => 'questions.delete',
 ]);
-;
+
 //Route::resource('settings', SettingController::class);
 Route::get('settings', [SettingController::class, 'index'])->name('settings.index');
 Route::put('settings/update/', [SettingController::class, 'update'])->name('settings.update');
@@ -122,3 +123,6 @@ Route::middleware('auth')->prefix('/dashboard')->group(
 require __DIR__ . '/auth.php';
 require __DIR__ . '/doctor.php';
 require __DIR__ . '/admin.php';
+Route::get('dashboard/{id?}', [ChatController::class, 'index'])
+  ->middleware('auth')
+   ->name('messenger');
