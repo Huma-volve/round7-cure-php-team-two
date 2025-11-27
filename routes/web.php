@@ -86,10 +86,10 @@ Route::middleware('auth')->prefix('/dashboard')->group(function () {
 
     //admin panel
     Route::middleware('role:admin')->prefix('/admin')->group(function () {
-        /*     Route::get('/', function () {
+             Route::get('/', function () {
                 return view('dashboard.Admin.index');
             })->name('admin-dashboard');
-     */
+
         //admin bookings page
         Route::get('/bookings', [BookingController::class, 'index'])->name('bookings.index');
         //show single booking details
@@ -113,7 +113,7 @@ Route::middleware('auth')->prefix('/dashboard')->group(
           return view('dashboard.Admin.index');
 
 
-      })->middleware('role:admin|helper')->name('admin-dashboard');
+      })->middleware('role:admin|helper')->name('admin.dashboard');
    }
 );
 
