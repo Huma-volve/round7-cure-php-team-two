@@ -27,17 +27,23 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
 
         $request->session()->regenerate();
-        $user=$request->user();
-        if($user->hasRole('doctor')){
-            return redirect()->intended('dashboard/doctor');
-        }
-        if($user->hasRole('admin')){
-            return redirect()->intended('dashboard/admin');
+        $user = $request->user();
+        if ($user->hasRole('doctor')) {
+            return redirect()->route('doctor.dashboard');
         }
 
-//        return redirect()->intended(route('dashboard', absolute: false));
-        return "hi";
+        if($user->hasRole('admin')||$user->hasRole('helper')){
+            return redirect()->route('admin-dashboard');}
+
+        if ($user->hasRole('admin'))
+        {
+            return redirect()->route('admin-dashboard');
+
+        }
+
+
     }
+
 
     /**
      * Destroy an authenticated session.

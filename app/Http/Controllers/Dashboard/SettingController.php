@@ -16,9 +16,9 @@ class SettingController extends Controller
     public function index()
     {
         $settings = Setting::first();
-        return view('Dashboard.settings.index', compact('settings'));
+        return view('dashboard.settings.index', compact('settings'));
     }
-    
+
     /**
      * Show the form for creating a new resource.
      */
@@ -56,17 +56,20 @@ class SettingController extends Controller
      */
     public function update(Request $request, Setting $setting)
     {
-         $request->validate([
-            'phone' => 'required|numeric',
+        //return $request;
+        $request->validate([
+            'phone' => 'required',
             'email' => 'required|email|max:255',
-            'logo'=>'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-           
+            'logo' => 'nullable|image|mimes:jpeg,png,webp,jpg,gif,svg|max:2048',
+            'rate' => 'required|numeric|min:1|max:30'
+
         ]);
-       $setting->logo = FileController::updateFile($request->file('logo'), $setting->logo,'uploads/settings');
+        $setting->logo = FileController::updateFile($request->file('logo'), $setting->logo, 'uploads/settings');
         $setting->save();
         $setting->update([
             'phone' => $request->phone,
             'email' => $request->email,
+            'rate' => $request->rate,
         ]);
 
         return redirect()->route('settings.index')->with('success', 'Settings updated successfully.');
