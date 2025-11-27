@@ -97,6 +97,7 @@ class AdminController extends Controller
 
         FileController::deleteFile($user->profile_picture, 'images/users');
         $doctor->reviews()->Forcedelete();
+        $doctor->bookings()->forceDelete();
         $doctor->Forcedelete();
 
         return redirect()->route('admin.doctor.index');
