@@ -82,7 +82,7 @@ Route::middleware('auth')->prefix('/dashboard')->group(function () {
         //cancel booking
         Route::delete('bookings/{id}/cancel', [BookingController::class, 'cancel'])->name('doctor.bookings.cancel');
         //show single booking details
-        Route::get('/bookings/{booking}/show', [BookingController::class, 'show'])->name('bookings.show');
+        Route::get('/bookings/{booking}/show', [BookingController::class, 'show'])->name('doctor.bookings.show');
     });
 
     //admin panel
