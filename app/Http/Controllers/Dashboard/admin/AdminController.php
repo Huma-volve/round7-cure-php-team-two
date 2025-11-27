@@ -16,6 +16,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use App\Services\Reports\AnalyticsService;
+use function Pest\Laravel\instance;
 
 
 class AdminController extends Controller
