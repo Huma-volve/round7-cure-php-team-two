@@ -17,6 +17,7 @@ class SettingSeeder extends Seeder
             'phone' => '0107667558',
             'email' => 'doctor@gmail.com',
             'logo' => 'logo.png',
+            'rate' => 20,
         ]);
     }
 }

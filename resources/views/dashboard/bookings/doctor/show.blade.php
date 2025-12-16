@@ -51,21 +51,25 @@
                           </div>
                           <div class="card-body">
                             @php
-                              $time = $booking->payment_time; // Carbon instance
-                              $hour = $time->format('g');     // 4
-                              $period = $time->format('a');   // pm
-                              $date = $time->format('d F Y'); // 13 November 2025
+                            if($booking->payment_time === null) {
+                                $text = "No Payment Time Available";
+                            } else {
+                                $time = $booking->payment_time; // Carbon instance
+                                $hour = $time->format('g');     // 4
+                                $period = $time->format('a');   // pm
+                                $date = $time->format('d F Y'); // 13 November 2025
 
-                              $text = $time->minute == 30
-                                  ? "$hour and half $period on $date"
-                                  : $time->format('g:i a \o\n d F Y');
+                                $text = $time->minute == 30
+                                    ? "$hour and half $period on $date"
+                                    : $time->format('g:i a \o\n d F Y');
+                            }
                           @endphp
                             <h5 class="card-title">Payment Time</h5>
                             <p class="card-text">{{$text}}</p>
                           </div>
                           <div class="card-body">
-                            <h5 class="card-title">Paid Amount</h5>
-                            <p class="card-text">{{ $booking->doctor->session_price }}</p>
+                            <h5 class="card-title">Doctor Amount</h5>
+                            <p class="card-text">{{ $booking->doctor_amount}}</p>
                           </div>
                         </div>
                       </div>

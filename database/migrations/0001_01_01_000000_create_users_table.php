@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('google_id')->nullable()->unique();
             $table->string('phone_number')->unique();
             $table->string('password');
+            $table->string('address')->nullable();
             $table->string('profile_photo')->nullable();
             $table->float('latitude')->nullable();
             $table->float('longitude')->nullable();

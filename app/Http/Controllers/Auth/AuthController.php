@@ -58,5 +58,7 @@ class AuthController extends Controller
         return response()->json(['data'=>null,'message'=>'logout successfully'],200);
     }
 
+  
+
 
 }

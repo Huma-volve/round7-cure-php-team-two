@@ -15,7 +15,7 @@ class StripeController extends Controller
 {
 
     $booking = Booking::with('doctor')->findOrFail($bookingId);
-    $price=$booking->doctor->session_price;
+    $total=$booking->total;
     Stripe::setApiKey(env('STRIPE_SECRET'));
     $session = Session::create([
         'payment_method_types' => ['card'],
@@ -23,7 +23,7 @@ class StripeController extends Controller
             'price_data' => [
                 'currency' => 'egp',
                 'product_data' => ['name' => 'Booking with Dr. ' . $booking->doctor->user->name],
-                'unit_amount' => $price * 100,
+                'unit_amount' => $total * 100,
             ],
             'quantity' => 1,
         ]],
@@ -61,8 +61,8 @@ public function handleWebhook(Request $request)
         $paymentIntent = \Stripe\PaymentIntent::retrieve($session->payment_intent);
 
         // Usually one charge per payment
-        $charge = $paymentIntent->charges->data[0] ?? null;
-        $paymentTime = $charge ? date('Y-m-d H:i:s', $charge->created) : null;
+        $paymentTime = date('Y-m-d H:i:s', $paymentIntent->created);
+
 
         if ($bookingId) {
             $booking = Booking::find($bookingId);
@@ -71,8 +71,6 @@ public function handleWebhook(Request $request)
                 $booking->update([
                     'status' => 'Confirmed',
                     'payment_status' => 'Paid',
-                    'stripe_session_id' => $session->id,
-                    'stripe_payment_intent' => $session->payment_intent,
                     'payment_time' => $paymentTime,
                 ]);
 

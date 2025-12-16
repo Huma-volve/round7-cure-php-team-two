@@ -39,7 +39,7 @@ class RolePermissionSeeder extends Seeder
                 'roles' => ['index', 'view', 'create', 'edit', 'delete', 'assign'],
                 'doctors' => ['index', 'view', 'approve', 'suspend', 'edit', 'delete'],
                 'patients' => ['index', 'view', 'edit', 'delete'],
-                'bookings' => ['index', 'view', 'update', 'cancel', 'refund', 'assign', 'export'],
+                'bookings' => ['index', 'show', 'reschedule', 'cancel'],
                 'payments' => ['index', 'view', 'refund', 'export'],
                 'notifications' => ['view', 'broadcast', 'send', 'delete'],
                 'reports' => ['view', 'export'],
@@ -52,7 +52,7 @@ class RolePermissionSeeder extends Seeder
             'doctor' => [
                 'dashboard' => ['view'],
                 'patients' => ['index', 'show', 'notes', 'export'],
-                'bookings' => ['index', 'show', 'update', 'cancel', 'reschedule', 'status'],
+                'bookings' => ['doctorBookings', 'show','cancel'],
                 'reviews' => ['index', 'reply', 'delete'],
                 'chats' => ['index', 'view', 'reply', 'close'],
                 'payments' => ['index', 'view'],
@@ -65,7 +65,7 @@ class RolePermissionSeeder extends Seeder
             'patient' => [
                 'dashboard' => ['view'],
                 'profile' => ['view', 'update'],
-                'bookings' => ['create', 'index', 'show', 'cancel', 'reschedule', 'review'],
+                'bookings' => ['store', 'patientBookings','show', 'cancel', 'reschedule'],
                 'payments' => ['create', 'index', 'view'],
                 'favorites' => ['index', 'add', 'remove'],
                 'reviews' => ['create', 'index'],

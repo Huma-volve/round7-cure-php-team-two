@@ -30,8 +30,6 @@ class Booking extends Model
         'status',
         'payment_method',
         'payment_status',
-        'stripe_payment_intent',
-        'stripe_session_id',
         'payment_time',
         'doctor_amount',
         'rate',

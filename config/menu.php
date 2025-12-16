@@ -76,6 +76,7 @@ return [
         'role' => 'doctor'
 
     ],
+
     [
         'route' => 'questions.index',
         'label' => 'Questions',
@@ -99,6 +100,13 @@ return [
 
         ],
 
+        // 'badge' => ['text' => '3', 'class' => 'badge bg-label-danger rounded-pill ms-2']
+    ],
+     [
+        'route' => 'messenger',
+        'label' => 'Chats',
+         'icon' => 'ri-chat-3-line',
+         'role' => 'doctor',
         // 'badge' => ['text' => '3', 'class' => 'badge bg-label-danger rounded-pill ms-2']
     ],
     [
