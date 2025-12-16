@@ -67,14 +67,14 @@ class MessageController extends Controller
                 Rule::requiredIf(function() use ($request) {
                     return !$request->input('user_id');
                 }),
-                'int', 
+                'int',
                 'exists:conversations,id',
             ],
             'user_id' => [
                 Rule::requiredIf(function() use ($request) {
                     return !$request->input('conversation_id');
                 }),
-                'int', 
+                'int',
                 'exists:users,id',
             ],
         ]);
@@ -104,7 +104,7 @@ class MessageController extends Controller
                     ]);
 
                     $conversation->participants()->attach([
-                        $user->id => ['joined_at' => now()], 
+                        $user->id => ['joined_at' => now()],
                         $user_id => ['joined_at' => now()],
                     ]);
                 }
@@ -131,7 +131,7 @@ class MessageController extends Controller
                 'type' => $type,
                 'body' => $message,
             ]);
-            
+
             DB::statement('
                 INSERT INTO recipients (user_id, message_id)
                 SELECT user_id, ? FROM participants
@@ -190,7 +190,7 @@ class MessageController extends Controller
     public function destroy(Request $request, $id)
     {
         $user = Auth::user();
-        
+
         $user->sentMessages()
             ->where('id', '=', $id)
             ->update([

@@ -32,10 +32,7 @@ class Patient extends Model
         return $this->hasMany(Review::class);
     }
 
-    public function chats()
-    {
-        return $this->hasMany(Chat::class, 'patient_id');
-    }
+   
 
     public function sessionFeedbacks()
     {

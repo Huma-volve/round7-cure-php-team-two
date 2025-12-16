@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             UsersDoctorsPatientsSeeder::class,
             ReviewsSeeder::class,
             FavoritesSeeder::class,
+            SettingSeeder::class,
             BookingsTableSeeder::class,
         ]);
         $this->call(

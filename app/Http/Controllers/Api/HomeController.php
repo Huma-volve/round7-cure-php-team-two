@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 class HomeController extends Controller
 {
     //
+  
     public function nearby(Request $request)
     {
         //return response()->json(auth()->user());
