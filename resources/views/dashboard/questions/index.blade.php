@@ -78,11 +78,5 @@
 
 
 
-
-
-
-
-
-
 @push('scripts')
 @endpush

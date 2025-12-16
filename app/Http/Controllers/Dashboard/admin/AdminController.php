@@ -3,16 +3,20 @@ namespace App\Http\Controllers\Dashboard\admin;
 
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Dashboard\HelperController;
 use App\Http\Controllers\Files\FileController;
 use App\Http\Controllers\Files\ImageController;
 use App\Http\Requests\Doctor\UpdateDoctorRequest;
 use App\Http\Requests\User\StoreUserRequest;
+use App\Http\Requests\User\UpdateUserRequest;
+use App\Models\Admin;
 use App\Models\Doctor;
 use App\Models\Specialty;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use App\Services\Reports\AnalyticsService;
+use function Pest\Laravel\instance;
 
 
 class AdminController extends Controller
@@ -62,6 +66,10 @@ class AdminController extends Controller
             unset($data['password']);
         }
 
+
+
+        $data['profile_photo']=ImageController::update_user_image($request,$user);
+
         //        if (!$request->hasFile('image') && $request->input('remove_image') == 1) {
 //            FileController::deleteFile($user->profile_photo, 'images/users');
 //            $data['profile_photo'] = null;
@@ -72,6 +80,7 @@ class AdminController extends Controller
 //            $data['profile_photo'] = $image;
 //        }
         $data['profile_photo'] = ImageController::update_user_image($request, $user);
+
 
         $user->update($data);
         $doctor->update($request->only(['specialty_id', 'license_number', 'session_price']));
@@ -88,6 +97,7 @@ class AdminController extends Controller
 
         FileController::deleteFile($user->profile_picture, 'images/users');
         $doctor->reviews()->Forcedelete();
+        $doctor->bookings()->forceDelete();
         $doctor->Forcedelete();
 
         return redirect()->route('admin.doctor.index');
@@ -104,11 +114,51 @@ class AdminController extends Controller
             'session_price' => 'required|numeric|min:0',
         ]);
 
-        $user = UserController::store($request);
-        $doctor = $user->doctor()->create($data);
-        $user->assignRole('doctor');
-        return redirect()->route('admin.doctor.index');
 
-    }
+   $user=UserController::store($request);
+   $doctor= $user->doctor()->create($data);
+   $user->assignRole('doctor');
+   return redirect()->route('admin.doctor.index');
+
+}
+public function ViewHelpers()
+{
+        $helpers= HelperController::GetHelpers();
+        $helpers->load('user');
+        return view('dashboard.Admin.Helpers.View',compact('helpers'));
+}
+public function AddHelperView(Admin $helper)
+{
+
+        return view('dashboard.Admin.Helpers.Add',compact('helper'));
+}
+public function AddHelper(StoreUserRequest $request)
+{
+
+       $helper= HelperController::storeHelper($request);
+
+       return redirect()->route('admin.helper.index');
+}
+public function EditHelper(User $user){
+        return view('dashboard.Admin.Helpers.Edit',compact('user'));
+}
+
+public function UpdateHelper(UpdateUserRequest $request,User $user)
+{
+        $helper=HelperController::updateHelper($request,$user);
+    return redirect()->route('admin.helper.index');
+}
+public function DestroyHelper(User $helper)
+{
+     HelperController::DeleteHelper($helper);
+    return redirect()->route('admin.helper.index');
+}
+
+//        $user = UserController::store($request);
+//        $doctor = $user->doctor()->create($data);
+//        $user->assignRole('doctor');
+//        return redirect()->route('admin.doctor.index');
+//
+//    }
 
 }

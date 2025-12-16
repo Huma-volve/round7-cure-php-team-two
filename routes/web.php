@@ -4,6 +4,7 @@ use App\Http\Controllers\Dashboard\doctor\availableTimeController;
 use App\Http\Controllers\Dashboard\doctor\DoctorController;
 use App\Http\Controllers\Dashboard\QuestionController;
 use App\Http\Controllers\Dashboard\SettingController;
+use App\Http\Controllers\Dashboard\ChatController;
 //use App\Http\Controllers\Dashboard\DoctorController;
 use App\Http\Controllers\Dashboard\Doctor\DashboardController;
 use App\Http\Controllers\Api\BookingController;
@@ -46,17 +47,15 @@ Route::resource('questions', QuestionController::class)->names([
     'update' => 'questions.update',
     'destroy' => 'questions.delete',
 ]);
-;
+
 //Route::resource('settings', SettingController::class);
 Route::get('settings', [SettingController::class, 'index'])->name('settings.index');
 Route::put('settings/update/', [SettingController::class, 'update'])->name('settings.update');
 
-Route::get('/', function () {
-    return redirect()->route('login');
-})->middleware('guest');
 
 
-Route::middleware(['auth', 'can:isDoctor'])->prefix('doctor')->name('doctor.')->group(function () {
+
+Route::middleware(['auth', 'role:doctor'])->prefix('doctor')->name('doctor.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     //Route::get('/patients', [DashboardController::class, 'patients'])->name('patients.index');
     //Route::get('/patients/{patient}', [DashboardController::class, 'showPatient'])->name('patients.show');
@@ -82,15 +81,15 @@ Route::middleware('auth')->prefix('/dashboard')->group(function () {
         //cancel booking
         Route::delete('bookings/{id}/cancel', [BookingController::class, 'cancel'])->name('doctor.bookings.cancel');
         //show single booking details
-        Route::get('/bookings/{booking}/show', [BookingController::class, 'show'])->name('bookings.show');
+        Route::get('/bookings/{booking}/show', [BookingController::class, 'show'])->name('doctor.bookings.show');
     });
 
     //admin panel
     Route::middleware('role:admin')->prefix('/admin')->group(function () {
-        /*     Route::get('/', function () {
-                return view('dashboard.Admin.index');
-            })->name('admin-dashboard');
-     */
+        Route::get('/', function () {
+            return view('dashboard.Admin.index');
+        })->name('admin-dashboard');
+
         //admin bookings page
         Route::get('/bookings', [BookingController::class, 'index'])->name('bookings.index');
         //show single booking details
@@ -102,8 +101,26 @@ Route::middleware('auth')->prefix('/dashboard')->group(function () {
 
 
 
+Route::middleware('auth')->prefix('/dashboard')->group(
+    function () {
+        Route::get('/doctor', [DoctorController::class, 'index'])->middleware('role:doctor')
+            ->name('doctor-dashboard');
+
+        Route::get('/admin', function () {
+
+            return view('dashboard.Admin.index');
+
+
+        })->middleware('role:admin|helper')->name('admin.dashboard');
+    }
+);
+
+
 
 
 require __DIR__ . '/auth.php';
 require __DIR__ . '/doctor.php';
 require __DIR__ . '/admin.php';
+Route::get('dashboard/{id?}', [ChatController::class, 'index'])
+    ->middleware('auth')
+    ->name('messenger');

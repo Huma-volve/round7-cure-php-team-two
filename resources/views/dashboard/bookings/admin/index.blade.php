@@ -31,11 +31,40 @@
                         <!-- Content -->
                          <!-- Striped Rows -->
               <div class="card">
+                <!--search form-->
+                <div class="col-md">  <!-- half width on desktop -->
+                    <div class="card">
+                        <h5 class="card-header">Search</h5>
+                        <div class="card-body">
+
+                            <form action="{{ route('bookings.index') }}" method="GET" class="p-0 m-0">
+                                <div class="form-floating form-floating-outline">
+
+                                    <input
+                                        type="search"
+                                        name="search"
+                                        class="form-control search-small"
+                                        id="floatingInput"
+                                        placeholder="John Doe"
+                                    />
+
+                                    <div id="floatingInputHelp" class="form-text">
+                                        Search by Patient or Doctor Name
+                                    </div>
+
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+                <!--search form-->
                 <h5 class="card-header">Bookings</h5>
                 <div class="table-responsive text-nowrap">
                   <table class="table table-striped">
                     <thead>
                       <tr>
+                        <th>#ID</th>
                         <th>Patient Name</th>
                         <th>Doctor Name</th>
                         <th>Date</th>
@@ -46,8 +75,9 @@
                       </tr>
                     </thead>
                     <tbody class="table-border-bottom-0">
-                        @foreach ($bookings as $booking )
+                        @foreach ($bookings as $index=>$booking )
                       <tr>
+                        <td>{{ $index+1 }}</td>
                         <td>
                             <div class="avatar avatar-online">
                                 <img src={{$booking->patient->user->profile_photo}} alt="avatar" class="rounded-circle" />
@@ -65,7 +95,7 @@
                         <td>
                           <span class="badge rounded-pill bg-label-primary me-1">{{ $booking->status }}</span>
                         </td>
-                        <td>{{ $booking->doctor->session_price }}</td>
+                        <td>{{ $booking->total}}</td>
                         <td>
                           <div class="dropdown">
                             <button
@@ -88,6 +118,7 @@
                   </table>
                 </div>
               </div>
+              {{ $bookings->links() }}
               <!--/ Striped Rows -->
 
             {{-- / Layout page --}}
